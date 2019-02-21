@@ -5,15 +5,14 @@ CSC724 Course Project on K8s scheduler
 
 Commit message guidelines:
 
-*********************************************************************
-First line identifies Task number and task name (less than 80 chars).
-Next you define the problem (If applicable).
-Describe the fix/changes.
-Describe the testing (If applicable or just say not tested yet).
-
-Enlist the to-do tasks for this issue. (If applicable. You may choose
+##########################################################################
+1. First line identifies Task number and task name (less than 80 chars).
+2. Next you define the problem (If applicable).
+3. Describe the fix/changes.å
+4. Describe the testing (If applicable or just say not tested yet).
+5. Enlist the to-do tasks for this issue. (If applicable. You may choose
 to say it's in progress)
-*********************************************************************
+##########################################################################
 
 eg:
 
