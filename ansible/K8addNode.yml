@@ -1,0 +1,45 @@
+---
+- name: Grabbing token
+  hosts: K8master
+  remote_user: ubuntu
+  tasks:
+        - name: "getting token"
+          command: "kubeadm token create --print-join-command"
+          register: join_cmd
+
+- hosts: K8node4
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  tasks:
+        - debug: msg="Installing K8s on {{inventory_hostname}}"
+        - name: "Configuring DNS servers"
+          script: "./scripts/updateDNS.sh {{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} 192.168.42.1 192.168.42.1"
+
+        - name: "Forcing update on hostname"
+          command: "hostnamectl set-hostname {{inventory_hostname}}"
+
+        - name: "disable swap"
+          command: swapoff -a
+
+        - name: "Installing Docker"
+          script: ./scripts/docker_install.sh
+
+        - name: "Uploading daemon.json"
+          copy:
+                  src: ./config/docker/daemon.json
+                  dest: /etc/docker/daemon.json
+
+        - name: "Updating Network Configuration"
+          script: ./scripts/net_config.sh
+
+        - name: "restarting docker service"
+          command: service docker restart
+
+        - name: "Installing Kubelet Kubeadm Kubectl"
+          script: ./scripts/kubeadm_install.sh
+
+        - debug: msg="Joining {{inventory_hostname}} to cluster"
+        - command: "{{ hostvars['K8master']['join_cmd']['stdout'] }}"
