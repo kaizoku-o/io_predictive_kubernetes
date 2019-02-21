@@ -35,6 +35,8 @@ Non Functional changes:
 Corrected indentation and placing of "{" curly braces in the code.
 
 Testing:
-Tested by running ./benchmark 2 2
+1> Tested with 61 threads and 10 containers.
+2> Also stress tested by running:
+for i in {1..100}; do ./benchmark/benchmark 10 2 3 5 4 6 5 7 9 8 12; done
 
 TODO:: Verify concurrency issues.
