@@ -15,9 +15,6 @@
 
   tasks:
         - debug: msg="Installing K8s on {{inventory_hostname}}"
-        - name: "Configuring DNS servers"
-          script: "./scripts/updateDNS.sh {{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} 192.168.42.1 192.168.42.1"
-
         - name: "Forcing update on hostname"
           command: "hostnamectl set-hostname {{inventory_hostname}}"
 

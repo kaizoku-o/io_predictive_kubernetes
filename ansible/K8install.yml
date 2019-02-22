@@ -7,9 +7,6 @@
 
   tasks:
         - debug: msg="Installing K8s on {{inventory_hostname}}"
-        - name: "Configuring DNS servers"
-          script: "./scripts/updateDNS.sh {{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} 192.168.42.1 192.168.42.1"
-
         - name: "Forcing update on hostname"
           command: "hostnamectl set-hostname {{inventory_hostname}}"
 
@@ -63,6 +60,8 @@
           command: "kubeadm token create --print-join-command"
           register: join_cmd
 
+        - debug: msg= "{{ join_cmd.stdout }} "
+
 - hosts: K8nodes
   remote_user: ubuntu
   become: yes
@@ -71,11 +70,3 @@
   tasks:
          - debug: msg="Joining {{inventory_hostname}} to cluster"
          - command: "{{ hostvars['K8master']['join_cmd']['stdout'] }}"
-
-- hosts: Kubsetup
-  remote_user: ubuntu
-  become: yes
-  become_user: root
-  become_method: sudo
-  tasks:
-          - command: "docker run -d -p 192.168.42.206:5000:5000 --restart=always --name registry -v /mnt/registry:/var/lib/registry registry:2"
