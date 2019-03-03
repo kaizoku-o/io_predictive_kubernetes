@@ -51,6 +51,8 @@
     - name: Forcing no password authentication
       command: "sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g; s/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config"
 
-    - name: refreshing sshd
-      command: service ssh restart
+    - name: Restart sshd
+      service:
+        name: ssh
+        state: restarted
 

@@ -26,14 +26,16 @@
 
         - name: "Uploading daemon.json"
           copy:
-                  src: ./config/docker/daemon.json
-                  dest: /etc/docker/daemon.json
+            src: ./config/docker/daemon.json
+            dest: /etc/docker/daemon.json
 
         - name: "Updating Network Configuration"
           script: ./scripts/net_config.sh
 
         - name: "restarting docker service"
-          command: service docker restart
+          service:
+            name: docker
+            state: restarted
 
         - name: "Installing Kubelet Kubeadm Kubectl"
           script: ./scripts/kubeadm_install.sh
