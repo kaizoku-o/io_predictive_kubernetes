@@ -2,6 +2,7 @@ K8Cluster:
         hosts:
                 K8master:
                         ansible_host:  52.33.172.239
+                        internal_ip: 172.31.13.253
                         sudoers:
                                 - kdmarti2
                                 - ubuntu

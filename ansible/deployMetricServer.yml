@@ -1,0 +1,27 @@
+- hosts: K8master
+  remote_user: ubuntu
+  become_user: root
+  become_method: sudo
+
+  tasks:
+          - name: Downloading metric server from git
+            git:
+                  repo: "https://github.com/kubernetes-incubator/metrics-server.git"
+                  dest: /tmp/metrics-server/
+                  clone: yes
+                  force: yes
+
+          - name: Uploading metrics-server-deployment config file
+            copy:
+                    src: ./config/metrics-server-deployment.yaml
+                    dest: /tmp/metrics-server/deploy/1.8+/
+                    backup: no
+
+          - name: installing metric server
+            command: kubectl create -f ./deploy/1.8+/
+            register: deploy_metric_server
+            args:
+                chdir: /tmp/metrics-server/
+
+          - debug: msg="{{ deploy_metric_server.stdout }}"
+          - debug: msg="{{ deploy_metric_server.stderr }}"
