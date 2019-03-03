@@ -25,7 +25,9 @@
           script: ./scripts/net_config.sh
 
         - name: "restarting docker service"
-          command: service docker restart
+          service:
+            name: docker
+            state: restarted
 
         - name: "Installing Kubelet Kubeadm Kubectl"
           script: ./scripts/kubeadm_install.sh
@@ -44,10 +46,10 @@
 
         - command: sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
-        - name: "Downloading Fannel"
+        - name: "Downloading Flannel"
           command: curl https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml -o /home/ubuntu/kube-flannel.yml
  
-        - name: "Installing Fannel"
+        - name: "Installing Flannel"
           command: kubectl apply -f /home/ubuntu/kube-flannel.yml
 
         - name: "testing if pod network is up"
@@ -62,6 +64,33 @@
         - name: "getting token"
           command: "kubeadm token create --print-join-command"
           register: join_cmd
+
+        - name: "Untainting master to allow pod scheduling"
+          command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+
+        - name: "Checkout prometheus-operator Git repository"
+          git:
+            repo: 'https://github.com/coreos/prometheus-operator.git'
+            dest: /home/ubuntu/
+        
+        - name: "Install kube-prometheus - includues operator, node-exporter, grafana"
+          command: "kubectl apply -f /home/ubuntu/prometheus-operator/contrib/kube-prometheus/manifests/"
+        
+        - pause:
+            seconds: 2
+        
+        - name: "Re-Install kube-prometheus to avoid race-condition"
+          command: "kubectl apply -f /home/ubuntu/prometheus-operator/contrib/kube-prometheus/manifests/"
+
+        - name: "Pausing for prometheus containers to come up"
+          pause:
+            seconds: 10
+
+        - name: "Exposing prometheus web UI"
+          command: "kubectl expose -n monitoring service prometheus-k8s --type=NodePort --name prometheus-web-client"
+
+        - name: "Exposing grafana web UI"
+          command: "kubectl expose -n monitoring deployment grafana --type=NodePort --name monitoring-grafana-client"
 
         - debug: msg= "{{ join_cmd.stdout }} "
 
