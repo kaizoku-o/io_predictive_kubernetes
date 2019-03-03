@@ -71,7 +71,7 @@
         - name: "Checkout prometheus-operator Git repository"
           git:
             repo: 'https://github.com/coreos/prometheus-operator.git'
-            dest: /home/ubuntu/
+            dest: /home/ubuntu/prometheus-operator
         
         - name: "Install kube-prometheus - includues operator, node-exporter, grafana"
           command: "kubectl apply -f /home/ubuntu/prometheus-operator/contrib/kube-prometheus/manifests/"
