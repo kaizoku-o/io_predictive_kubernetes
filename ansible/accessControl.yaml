@@ -1,5 +1,5 @@
 - name: Conducting Access Controls
-  hosts: all
+  hosts: K8master
   remote_user: ubuntu
   become: yes
   become_user: root
