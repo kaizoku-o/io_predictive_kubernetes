@@ -32,6 +32,20 @@
         - name: "Installing Kubelet Kubeadm Kubectl"
           script: ./scripts/kubeadm_install.sh
 
+        - name: "Setting up GPG keys for prometheus installation"
+          command: "wget https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg | sudo apt-key add -"
+
+        - name: "Update apt cache and install prometheus-node-exporter"
+          apt:
+            name: prometheus-node-exporter
+            update_cache: yes
+        
+        - name: "Start prometheus-node-exporter"
+          service:
+            name: prometheus-node-exporter
+            state: started
+            enabled: yes
+
 
 - name: configuring K8master 
   hosts: K8master
@@ -68,32 +82,51 @@
         - name: "Untainting master to allow pod scheduling"
           command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
 
-        - name: "Checkout prometheus-operator Git repository"
-          git:
-            repo: 'https://github.com/coreos/prometheus-operator.git'
-            dest: /home/ubuntu/prometheus-operator
-        
-        - name: "Install kube-prometheus - includues operator, node-exporter, grafana"
-          command: "kubectl apply -f /home/ubuntu/prometheus-operator/contrib/kube-prometheus/manifests/"
-        
-        - pause:
-            seconds: 2
-        
-        - name: "Re-Install kube-prometheus to avoid race-condition"
-          command: "kubectl apply -f /home/ubuntu/prometheus-operator/contrib/kube-prometheus/manifests/"
-
-        - name: "Pausing for prometheus containers to come up"
-          pause:
-            seconds: 10
-
-        - name: "Exposing prometheus web UI"
-          command: "kubectl expose -n monitoring service prometheus-k8s --type=NodePort --name prometheus-web-client"
-
-        - name: "Exposing grafana web UI"
-          command: "kubectl expose -n monitoring deployment grafana --type=NodePort --name monitoring-grafana-client"
-
         - debug: msg= "{{ join_cmd.stdout }} "
 
+- hosts: prometheus-server
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+        - name: "Setting up GPG keys for prometheus installation"
+          command: "wget https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg | sudo apt-key add -"
+          
+        - name: "Update apt cache and install prometheus components"
+          apt:
+            name: "{{ packages }}"
+            vars:
+              packages:
+              - prometheus
+              - prometheus-node-exporter
+              - prometheus-pushgateway
+              - prometheus-alertmanager
+            update_cache: yes
+
+        - name: "Configure prometheus"
+          action:
+            template:
+              src: prometheus_yml_template.j2
+              dest: /etc/prometheus/prometheus.yml
+              mode: 0644
+          notify:
+            - restart prometheus
+        
+        - name: "Start prometheus"
+          service:
+            name: prometheus
+            state: started
+            enabled: yes
+
+    handlers:
+        - name: restart prometheus
+          action:
+            service:
+              name: prometheus
+              state: restarted
+
+              
 - hosts: K8nodes
   remote_user: ubuntu
   become: yes
