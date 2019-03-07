@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-stressor
+  labels:
+    app: stressor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stressor
+  template:
+    metadata:
+      labels:
+        app: stressor
+    spec:
+      containers:
+      - name: stressor
+        image: caffiendd/stressng  
+        command: ["/usr/bin/stress-ng"]
+        args: ["--brk", "2", "--stack", "2", "--bigheap", "2"]
+
