@@ -161,3 +161,14 @@
 
           - debug: msg="{{ deploy_metric_server.stdout }}"
           - debug: msg="{{ deploy_metric_server.stderr }}"
+
+- hosts: prometheus-server
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+        - name: "Start prometheus"
+          service:
+            name: prometheus
+            state: restarted
