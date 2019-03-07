@@ -32,8 +32,13 @@
         - name: "Installing Kubelet Kubeadm Kubectl"
           script: ./scripts/kubeadm_install.sh
 
-        - name: "Setting up GPG keys for prometheus installation"
-          command: "wget https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg | sudo apt-key add -"
+        - name: "Download the GPG keys"
+          get_url:
+            url: https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg
+            dest: /tmp/prometheus.gpg
+          
+        - name: "Installing GPG keys"
+          command: "apt-key add /tmp/prometheus.gpg"
 
         - name: "Update apt cache and install prometheus-node-exporter"
           apt:
@@ -90,28 +95,30 @@
   become_user: root
   become_method: sudo
   tasks:
-        - name: "Setting up GPG keys for prometheus installation"
-          command: "wget https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg | sudo apt-key add -"
+        - name: "Download the GPG keys"
+          get_url:
+            url: https://s3-eu-west-1.amazonaws.com/deb.robustperception.io/41EFC99D.gpg
+            dest: /tmp/prometheus.gpg
+          
+        - name: "Installing GPG keys"
+          command: "apt-key add /tmp/prometheus.gpg"
           
         - name: "Update apt cache and install prometheus components"
           apt:
             name: "{{ packages }}"
-            vars:
-              packages:
-              - prometheus
-              - prometheus-node-exporter
-              - prometheus-pushgateway
-              - prometheus-alertmanager
             update_cache: yes
+          vars:
+            packages:
+            - prometheus
+            - prometheus-node-exporter
+            - prometheus-pushgateway
+            - prometheus-alertmanager
 
         - name: "Configure prometheus"
-          action:
-            template:
-              src: prometheus_yml_template.j2
-              dest: /etc/prometheus/prometheus.yml
-              mode: 0644
-          notify:
-            - restart prometheus
+          template:
+            src: prometheus_yml_template.j2
+            dest: /etc/prometheus/prometheus.yml
+            mode: 0644
         
         - name: "Start prometheus"
           service:
@@ -119,14 +126,6 @@
             state: started
             enabled: yes
 
-    handlers:
-        - name: restart prometheus
-          action:
-            service:
-              name: prometheus
-              state: restarted
-
-              
 - hosts: K8nodes
   remote_user: ubuntu
   become: yes

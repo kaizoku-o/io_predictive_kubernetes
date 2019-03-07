@@ -19,6 +19,7 @@ K8Cluster:
                         hosts:
                                 K8node1:
                                         ansible_host:  34.208.87.93
+                                        internal_ip: 172.31.8.99
                         vars:
                                 sudoers:
                                         - kdmarti2
@@ -39,8 +40,8 @@ K8Cluster:
 prometheus:
         hosts:
                 prometheus-server:
-                        ansible_host:  34.217.46.118
-                        internal_ip: 172.31.24.88
+                        ansible_host:  54.203.110.192
+                        internal_ip: 172.31.8.97
                         sudoers:
                                 - kdmarti2
                                 - ubuntu
