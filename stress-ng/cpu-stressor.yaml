@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-stressor
+  labels:
+    app: stressor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stressor
+  template:
+    metadata:
+      labels:
+        app: stressor
+    spec:
+      containers:
+      - name: stressor
+        image: caffiendd/stressng
+        command: ["/bin/bash", "-c"]
+        args: ["/usr/bin/mem-run.sh cpu"]
