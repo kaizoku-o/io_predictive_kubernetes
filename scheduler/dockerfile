@@ -14,7 +14,7 @@ ADD ./cfg/config /root/home/.kube/config
 
 ADD ./code /code
 
-WORKDIR CODE
+WORKDIR /code
 
 ENTRYPOINT ["python3","./main.py"]
 
