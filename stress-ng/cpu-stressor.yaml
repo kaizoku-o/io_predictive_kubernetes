@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cpu-stressor
+  name: memory-stressor
   labels:
     app: stressor
 spec:
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: stressor
-        image: caffiendd/stressng  
-        command: ["/usr/bin/stress-ng"]
-        args: ["--cpu", "3"]
+        image: caffiendd/stressng
+        command: ["/bin/bash", "-c"]
+        args: ["/usr/bin/mem-run.sh cpu"]

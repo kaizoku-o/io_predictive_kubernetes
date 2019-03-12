@@ -16,7 +16,6 @@ spec:
     spec:
       containers:
       - name: stressor
-        image: caffiendd/stressng  
-        command: ["/usr/bin/stress-ng"]
-        args: ["--brk", "2", "--stack", "2", "--bigheap", "2"]
-
+        image: caffiendd/stressng
+        command: ["/bin/bash", "-c"]
+        args: ["/usr/bin/mem-run.sh memory"]
