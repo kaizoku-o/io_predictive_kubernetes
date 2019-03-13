@@ -17,5 +17,4 @@ class GenericNodeSelector:
             ##
             #Just select the first node off the list
             ##
-            for key,val in nodeList.items():
-                return key
+            return nodeList[0]
