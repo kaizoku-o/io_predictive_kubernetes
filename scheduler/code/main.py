@@ -50,6 +50,7 @@ def scheduler(name,node,ns):
 
     ##
     #https://github.com/kubernetes-client/python/issues/547
+    #https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558
     ##
 
     target = client.V1ObjectReference()
