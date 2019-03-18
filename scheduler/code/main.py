@@ -5,6 +5,7 @@ import logging
 from kubernetes import client,config,watch
 from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
+from kubernetes.client.rest import ApiException
 
 ####################
 #    READ ONLYS
@@ -66,17 +67,25 @@ def scheduler(name,node,ns):
     #Needs Error handing here.
     #kubernetes.client.rest.ApiException
     ##
-    return v1_api.create_namespaced_binding(namespace=ns,body=body)
+    #Its likely going to error due to a bug we can try catch it and ignore it
+    ##
+    try:
+        v1_api.create_namespaced_binding(namespace=ns,body=body)
+    except ApiException as e:
+        logging.warning("Error has occured calling Create_namespaced_binding\n {0}\n".format(e));
+    except ValueError as e:
+        logging.warning("Recieved ValueError for Null target, Ignoring because https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558\n")
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
     logging.info("Starting to Schedular pods for {0} in namespace: {1}".format(scheduler_name,namespace))
     w = watch.Watch()
-    for event in w.stream(v1_api.list_namespaced_pod,namespace):
-        logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
-        if event['object'].status.phase == "Pending" and event['object'].spec.scheduler_name == scheduler_name:
-            scheduler(event['object'].metadata.name,get_nodes(),namespace)
+    while True:
+        for event in w.stream(v1_api.list_namespaced_pod,namespace):
+            logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
+            if event['object'].status.phase == "Pending" and event['object'].spec.scheduler_name == scheduler_name:
+                scheduler(event['object'].metadata.name,get_nodes(),namespace)
 
 if __name__ == '__main__':
     main()
