@@ -1,4 +1,5 @@
 from pandas import read_csv
+
 class FileHandler(BaseDataHandler):
 	def __init__(self):		
 		super().__init__()
