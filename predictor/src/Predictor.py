@@ -6,17 +6,21 @@ class Predictor:
 	def __init__(self):
 		pass
 		
-	def arima(self, csv_values):
-		p = 3# lag observations
+	def arima(self, csv_values, lookahead_window=1):
+		p = 5# lag observations
 		d = 1# degree of differencing
 		q = 0# order/size of moving average
-		X_Train_len = len(csv_values)
-		X_Train = csv_values[0:X_Train_len]
-		model = ARIMA(X_Train, order=(p, d, q))
-		model_fit = model.fit(disp = 0)
+		X_Train = [x for x in csv_values]
+		X_Train_len = len(csv_values)		
+		prediction = 0
+		for i in range(lookahead_window):
+			model = ARIMA(X_Train, order=(p, d, q))
+			model_fit = model.fit(disp = 0)
+			model_fit = model.fit(disp = 0)
+			prediction = model_fit.forecast()[0]
+			X_Train.append(prediction)
 
 		self.model_list_.append(model_fit)
-		prediction = model_fit.forecast()[0]
 		return prediction
 
 	def linear_svm():
