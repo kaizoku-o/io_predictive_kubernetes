@@ -15,6 +15,8 @@ RUN pip3 install statsmodels
 
 RUN pip3 install sklearn
 
+RUN pip3 install flask
+
 ADD ./src /usr/bin/
 
 WORKDIR /usr/bin/src/

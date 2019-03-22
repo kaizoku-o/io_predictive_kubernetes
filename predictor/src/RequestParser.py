@@ -13,12 +13,12 @@ class RequestParser:
 			if (handler.apiName_ == apiName):
 				# encode a response
 				handler.process()
-				handler.encode()
+				response = handler.encode()
+				return response
 				break
 
 	# register different handlers
 	def registerHandler(self, handler):
 		self.handlers_.append(handler);
 		pass
-
 

@@ -1,7 +1,6 @@
 from RequestParser import RequestParser
 from RequestResponseHandler import WorkloadPredictionHandler
 
-
 # Create a RequestParserObject
 requestParser = RequestParser()
 
@@ -11,5 +10,14 @@ requestParser = RequestParser()
 workLoadPred = WorkloadPredictionHandler()
 requestParser.registerHandler(workLoadPred)
 
-request = {'apiName':'predictWorkload'}
-requestParser.parse(request);
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+@app.route('/api', methods=['GET', 'POST'])
+def api():
+    print (request.is_json)
+    response = requestParser.parse(request.get_json())
+    return response
+
+if __name__ == '__main__':
+	app.run(debug=True, port=9580)
