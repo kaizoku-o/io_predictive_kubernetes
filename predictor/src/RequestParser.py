@@ -4,11 +4,12 @@ class RequestParser:
 		pass
 
 	# request is a JSon object
-	def parse(request):
+	def parse(self, request):
 		# extract apiName and determine which request handler to invoke
-		# right now we will have only one request handler
-		# apiName = extract api name from request
-		for i, handler in enumerate(handlers_):
+		# right now we have only one request handler
+		apiName = request['apiName']
+
+		for i, handler in enumerate(self.handlers_):
 			if (handler.apiName_ == apiName):
 				# encode a response
 				handler.process()
@@ -16,8 +17,8 @@ class RequestParser:
 				break
 
 	# register different handlers
-	def registerHandler(handler):
-		handlers_.append(obj);
+	def registerHandler(self, handler):
+		self.handlers_.append(handler);
 		pass
 
 
