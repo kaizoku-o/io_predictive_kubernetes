@@ -10,8 +10,11 @@ class Predictor:
 		p = 5# lag observations
 		d = 1# degree of differencing
 		q = 0# order/size of moving average
-		X_Train = [x for x in csv_values]
-		X_Train_len = len(csv_values)		
+
+		# X_Train = [x for x in csv_values] This is for filehandler
+		
+		X_Train = [float(x) for x in csv_values.split(',')]
+		X_Train_len = len(csv_values)
 		prediction = 0
 		for i in range(lookahead_window):
 			model = ARIMA(X_Train, order=(p, d, q))
