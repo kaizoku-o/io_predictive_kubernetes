@@ -4,7 +4,7 @@ class RequestParser:
 		pass
 
 	# request is a JSon object
-	def parse(self, request):
+	def process_request(self, request):
 		# extract apiName and determine which request handler to invoke
 		# right now we have only one request handler
 		apiName = request['apiName']

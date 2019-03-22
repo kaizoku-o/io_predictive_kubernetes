@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route('/api', methods=['GET', 'POST'])
 def api():
     print (request.is_json)
-    response = requestParser.parse(request.get_json())
+    response = requestParser.process_request(request.get_json())
     return response
 
 if __name__ == '__main__':

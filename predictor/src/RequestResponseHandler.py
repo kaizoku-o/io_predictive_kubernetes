@@ -29,12 +29,28 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 		node_ip = ['192.168.0.2', '192.168.0.3']
 
 		for i, ip in enumerate(node_ip):
-			prediction = pred.arima(csv_values[0:-5], 5)
+			prediction = pred.arima(csv_values[0:-1-i], 1+i)
 			self.data_[ip] = prediction[0]
 
 		print("actual: " + str(csv_values[-1]) + " prediction: " + str(prediction))
 
 	# encode a json response
 	def encode(self):
-		json_data = json.dumps(self.data_)
+		workload = {}
+		workloadType = {}
+		workloadUnit = {}
+
+		workload['workload'] = self.data_
+		workloadType['workloadType'] = 'cpu'
+		workloadUnit['unit'] = 'percent'
+
+		jsonList = []
+		jsonList.append(workload)
+		jsonList.append(workloadType)
+		jsonList.append(workloadUnit)
+
+		lst = []
+		lst.append(jsonList)
+
+		json_data = json.dumps(lst)
 		return json_data
