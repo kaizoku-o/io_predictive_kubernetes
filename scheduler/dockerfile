@@ -9,8 +9,9 @@ RUN apt-get install -y \
 	libffi-dev
 
 RUN pip3 install kubernetes
+RUN pip3 install requests
 
-ADD ./cfg/config /root/home/.kube/config
+ADD ./cfg/config /root/.kube/config
 
 ADD ./code /code
 
