@@ -7,29 +7,32 @@ from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
 
-####################
-#    READ ONLYS
-####################
-if "SCHEDULER_NAME" in ENV:
-    scheduler_name = ENV.get("SCHEDULER_NAME")
-else:
-    scheduler_name = "tetris-scheduler"
 
-if "NAMESPACE" in ENV:
-    namespace = ENV.get("NAMESPACE")
-else:
-    namespace = "default"
+##
+#Globals
+##
+
+scheduler_cpu = None
+scheduler_mem = None
+scheduler_io = None
+
+namespace = None
+
+cpu_model = None
+mem_model = None
+IO_model = None
+
+v1_api = None
+
+##
+#End of Globals
+##
 
 
-############################
-#config.load_incluster_config()
-
-config.load_kube_config()
-
-v1_api = client.CoreV1Api()
-p = pns()
-
-def get_nodes():
+##
+#Need To get the IP addresses
+##
+def get_nodes(p):
     logging.info("Getting Nodes!!!")
     ready_nodes = []
     for k8_node in v1_api.list_node().items:
@@ -42,6 +45,10 @@ def get_nodes():
     
     return p.node_selection(ready_nodes)
 
+
+##
+#Might need Error handling by leveraging an error queue 
+##
 def scheduler(name,node,ns):
     logging.info("Putting {0} on {1} in namespace: {2}".format(name,node,ns))
     
@@ -77,15 +84,64 @@ def scheduler(name,node,ns):
         logging.warning("Recieved ValueError for Null target, Ignoring because https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558\n")
 
 
+def init():
+    ##
+    #Globals
+    ##
+    global scheduler_cpu
+    global scheduler_mem
+    global scheduler_io
+
+    global model_cpu
+    global model_mem
+    global model_io
+
+    global namespace
+
+    global v1_api
+
+    if "SCHEDULER_NAME" in ENV:
+        scheduler_base = ENV.get("SCHEDULER_NAME")
+    else:
+        scheduler_base = "tetris-scheduler"
+    
+    
+    scheduler_cpu = scheduler_base + "-cpu"
+    scheduler_mem = scheduler_base + "-mem"
+    scheduler_io = scheduler_base + "-io"
+
+    model_cpu = pns("cpu")
+    model_mem = pns("mem")
+    model_io = pns("io")
+
+
+    if "NAMESPACE" in ENV:
+        namespace = ENV.get("NAMESPACE")
+    else:
+        namespace = "default"
+
+    config.load_kube_config()
+    v1_api = client.CoreV1Api()
+
 def main():
+
+    init();
+
     logging.basicConfig(level=logging.INFO)
-    logging.info("Starting to Schedular pods for {0} in namespace: {1}".format(scheduler_name,namespace))
+    logging.info("Starting to Schedular pods for {0} in namespace: {1}".format("tetis",namespace))
     w = watch.Watch()
+
     while True:
         for event in w.stream(v1_api.list_namespaced_pod,namespace):
             logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
-            if event['object'].status.phase == "Pending" and event['object'].spec.scheduler_name == scheduler_name:
-                scheduler(event['object'].metadata.name,get_nodes(),namespace)
+            if event['object'].status.phase == "Pending":
+                if event['object'].spec.scheduler_name == scheduler_cpu:
+                    scheduler(event['object'].metadata.name,get_nodes(model_cpu),namespace)
+                elif event['object'].spec.scheduler_name == scheduler_mem:
+                    scheduler(event['object'].metadata.name,get_nodes(model_mem),namespace)
+                elif event['object'].spec.scheduler_name == scheduler_io:
+                    scheduler(event['object'].metadata.name,get_nodes(model_io),namespace)
+
 
 if __name__ == '__main__':
     main()
