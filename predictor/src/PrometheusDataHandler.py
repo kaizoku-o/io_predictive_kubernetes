@@ -7,4 +7,9 @@ class PrometheusDataHandler(BaseDataHandler):
 		super().__init__()
 
 	def get_data():
-		return run_query_range(Queries["cpu"], 1552290000, 1552320000, 60)
+		result = run_query_range(Queries["cpu"], 1552290000, 1552320000, 60)
+		hosts = {x[0] for x in result}
+		response = {}
+		for host in hosts:
+			response[host] = ','.join([x[2] for x in result if x[0]==host])
+		return response
