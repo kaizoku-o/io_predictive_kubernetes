@@ -36,7 +36,7 @@ def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
             ##
             #Improve Error Handling Here
             ##
-            raise RuntimeError("StatusCode {0}".format(r.status_ode))
+            raise RuntimeError("StatusCode {0}".format(r.status_code))
         else:
             workloads = r.json()[0][0]["workload"]
             order_loads = sorted(workloads.items(),key=operator.itemgetter(1))
