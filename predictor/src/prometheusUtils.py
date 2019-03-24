@@ -12,7 +12,7 @@ def run_query(prom_query):
     parameters = {
         "query": prom_query
     }
-    QUERY_URL = 'http://localhost:9090/api/v1/query'
+    QUERY_URL = 'http://172.31.7.88:9090/api/v1/query'
 
     try:
         r = requests.get(QUERY_URL, params=parameters)
@@ -37,7 +37,7 @@ def run_query_range(query, start_range, end_range, step):
     Returns:
 
     """
-    QUERY_RANGE_URL = 'http://localhost:9090/api/v1/query_range'
+    QUERY_RANGE_URL = 'http://172.31.7.88:9090/api/v1/query_range'
     parameters = {
         "query": query,
         "start": start_range,
