@@ -50,7 +50,7 @@ def run_query_range(query, start_range, end_range, step):
     try:
         r = requests.get(QUERY_RANGE_URL, params=parameters)
         if r.ok:
-            g = json.loads(r.content)
+            g = json.loads(r.text)
             for each in g['data']['result']:
                 for x in each['values']:
                     j = each['metric']['instance'] + ',' + ','.join(str(y) for y in x)
