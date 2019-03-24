@@ -21,7 +21,7 @@ import operator
 #]
 
 ##
-#url format 
+#url forma
 ##
 def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
     request_format = {
@@ -44,8 +44,3 @@ def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
             
     except exceptions.ConnectionError:
         print("Failed to Connect")
-
-
-print(get_predict_workload("http://127.0.0.1:9580/api","cpu"));
-
-
