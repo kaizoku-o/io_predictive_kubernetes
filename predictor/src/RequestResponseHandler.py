@@ -1,6 +1,6 @@
 import requests
 import json
-from PrometheusDataHandler import PrometheusDataHandler as pdHandler
+from PrometheusDataHandler import PrometheusDataHandler
 from FileHandler import FileHandler
 from Predictor import Predictor
 
@@ -20,14 +20,23 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 		self.data_ = {}
 		super().__init__('predictWorkload')
 
-	def process(self):
+	def process(self, request):
+		model = request['model']
+		pdHandler = PrometheusDataHandler(model)
 		data = pdHandler.get_data()
 
 		for ip in data:
+			# print(ip)
+			# print("\n")
+			# print(ip.find('localhost'))
+			if (ip.find('localhost') != -1):
+				continue
 			csv_values = data[ip]
+			# print(csv_values)
 			pred = Predictor()
 			prediction = pred.arima(csv_values)
 			self.data_[ip] = prediction[0]
+			# csv_values = None
 
 		# csv_values = FileHandler('../data/exchange.csv').get_data()
 		# pred = Predictor()
