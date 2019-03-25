@@ -33,9 +33,6 @@ def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
     try:
         r = post(api,json=request_format)
         if r.status_code != 200:
-            ##
-            #Improve Error Handling Here
-            ##
             raise RuntimeError("StatusCode {0}".format(r.status_code))
         else:
             workloads = r.json()[0][0]["workload"]
@@ -43,4 +40,5 @@ def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
             return order_loads;
             
     except exceptions.ConnectionError:
-        print("Failed to Connect")
+        raise RuntimeError("Failed to Connect")
+
