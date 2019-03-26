@@ -1,9 +1,14 @@
 from .GenericNodeSelector import GenericNodeSelector
 from .PrometheusQuery import get_predict_workload
+
+import sys
+import json
+
 class PrometheusNodeSelector(GenericNodeSelector):
-    def __init__(self,alg,api):
+    def __init__(self,alg,api,log_collector=None):
         self.alg = alg;
         self.api = api;
+        self.log_collector = log_collector;
         super().__init__()
 
     def node_selection(self,nodeList: dict) -> str:
@@ -14,20 +19,17 @@ class PrometheusNodeSelector(GenericNodeSelector):
             for node_ip in node_workloads:
                 try:
                     ip = node_ip[0].split(':')[0]
+                    msg = {
+                        "Data" : node_workloads,
+                        "Choice" : nodeList[ip]
+                    }
+                    print(msg);
+                    sys.stdout.flush()
+                    if self.log_collector:
+                        self.log_collector.write_log(json.dumps(msg))
                     return nodeList[ip]
                 except KeyError:
                     pass
 
-            ##
-            #TODO: BETTER ERROR HANDLING WHEN WE CAN NOT FIND A NODE
-            ##
             raise RuntimeError("Failed To select A Node")
-            ############################################
-            #Entering random_selection
-            ############################################
-
-            
-
-
-
 
