@@ -14,7 +14,6 @@ class RequestResponseHandler:
 	def encode(self):
 		pass
 
-
 class WorkloadPredictionHandler(RequestResponseHandler):
 	def __init__(self):
 		self.data_ = {}
@@ -22,22 +21,17 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 
 	def process(self):
 		data = pdHandler.get_data()
+		
+		# Example of using a fileHandler
+		# csv_values = FileHandler('../data/exchange.csv').get_data()
+		# prediction = pred.arima(csv_values[0:-1-i], 1+i)
 
 		for ip in data:
-			csv_values = data[ip]
+			# values is a tuple (time, workload)
+			values = data[ip]
 			pred = Predictor()
-			prediction = pred.arima(csv_values)
-			self.data_[ip] = prediction[0]
-
-		# csv_values = FileHandler('../data/exchange.csv').get_data()
-		# pred = Predictor()
-		# # dummy node ip values
-		# node_ip = ['192.168.0.2', '192.168.0.3']
-
-		# for i, ip in enumerate(node_ip):
-		# 	prediction = pred.arima(csv_values[0:-1-i], 1+i)
-		# 	self.data_[ip] = prediction[0]
-		# print("actual: " + str(csv_values[-1]) + " prediction: " + str(prediction))
+			prediction = pred.get_prediction(values)
+			self.data_[ip] = prediction[-1]
 
 	# encode a json response
 	def encode(self):
