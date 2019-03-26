@@ -1,7 +1,7 @@
 from .GenericNodeSelector import GenericNodeSelector
 from .PrometheusQuery import get_predict_workload
 
-
+import sys
 import json
 
 class PrometheusNodeSelector(GenericNodeSelector):
@@ -19,13 +19,14 @@ class PrometheusNodeSelector(GenericNodeSelector):
             for node_ip in node_workloads:
                 try:
                     ip = node_ip[0].split(':')[0]
+                    msg = {
+                        "Data" : node_workloads,
+                        "Choice" : nodeList[ip]
+                    }
+                    print(msg);
+                    sys.stdout.flush()
                     if self.log_collector:
-                        msg = {
-                            "Data" : node_workloads,
-                            "Choice" : nodeList[ip]
-                        }
-                        print(msg);
-                        log_collector.write_log(json.dumps(msg))
+                        self.log_collector.write_log(json.dumps(msg))
                     return nodeList[ip]
                 except KeyError:
                     pass

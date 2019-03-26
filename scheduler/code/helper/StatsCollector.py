@@ -5,5 +5,5 @@ class StatsCollector(object):
         self.fin = open("./decision.log","w");
 
     def write_log(self,msg):
-        self.write(msg);
-        self.flush();
+        self.fin.write(msg + "\n");
+        self.fin.flush();
