@@ -5,5 +5,9 @@ Queries = {
 
     "cpunonidle" : "sum(rate(node_cpu{mode!='idle',mode!='iowait',mode!~'^(?:guest.*)$'}[5m])) BY (instance)",
 
-    "diskio" : "node_disk_io_now{device='xvda'}"
+    "diskio" : "node_disk_io_now{device='xvda'}",
+
+    "cpuusageperc" : "100 - (avg by (instance) (irate(node_cpu{mode='idle'}[5m])) * 100)",
+
+    "currmemusage" : "100 * (1 - ((node_memory_MemFree + node_memory_Cached + node_memory_Buffers) / node_memory_MemTotal))"
 }
