@@ -3,6 +3,7 @@ from .PrometheusQuery import get_predict_workload
 
 import sys
 import json
+import logging
 
 class PrometheusNodeSelector(GenericNodeSelector):
     def __init__(self,alg,api,log_collector=None):
@@ -23,8 +24,7 @@ class PrometheusNodeSelector(GenericNodeSelector):
                         "Data" : node_workloads,
                         "Choice" : nodeList[ip]
                     }
-                    print(msg);
-                    sys.stdout.flush()
+		    logging.info(msg)
                     if self.log_collector:
                         self.log_collector.write_log(json.dumps(msg))
                     return nodeList[ip]
