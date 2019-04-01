@@ -105,4 +105,4 @@ class Predictor:
 		return predictions
 
 	def get_prediction(self, values, lookahead_window=1):
-		return self.holtWinters_des(values, lookahead_window)
+		return self.wma(values, lookahead_window)
