@@ -50,7 +50,6 @@ def get_nodes(p):
 
     return p.node_selection(ready_nodes)
 
-
 ##
 #Might need Error handling by leveraging an error queue
 #We need to use a decorator

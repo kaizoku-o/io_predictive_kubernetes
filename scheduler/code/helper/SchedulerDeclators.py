@@ -5,6 +5,7 @@ from kubernetes.client.rest import ApiException
 
 scheduler_state = {};
 backoff_count = 1.0;
+logging.basicConfig(level=logging.INFO)
 
 def backoff(func):
 	global scheduler_state
@@ -46,3 +47,18 @@ def backoff(func):
 					'te' : ts + backoff_count*10,
 				}
 	return wrapper
+
+
+##
+#
+##
+def handle_runtime_error(func):
+
+    def wrapper(*args, **kw):
+        try 
+            return func(args);
+        except RuntimeError as e:
+            logging.warning(e);
+            return None;
+
+    return wrapper
