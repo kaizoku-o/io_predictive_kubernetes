@@ -1,6 +1,6 @@
 import json
 
-class StatsCollector(object):
+class GenericStatsCollector(object):
     def __init__(self):
         self.fin = open("./decision.log","w");
 
