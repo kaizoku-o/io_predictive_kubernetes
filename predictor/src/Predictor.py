@@ -127,8 +127,8 @@ class Predictor:
 		values_test = values[train_samples:]
 		test_samples = len(values_test)
 
-		logging.debug(f"Length of training set is {train_samples}")
-		logging.debug(f"Predicting {test_samples} values")
+		logging.debug("Length of training set is %f", train_samples)
+		logging.debug("Predicting %f values", test_samples)
 
 		y_true = [x[1] for x in values_test]
 
@@ -141,7 +141,7 @@ class Predictor:
 		except ValueError:
 			logging.error("Exception ocurred, rmse could not be determined")
 		
-		logging.debug(f'RMSE: {rmse}')
+		logging.debug('RMSE: %f', rmse)
 		return rmse
 
 	def get_prediction(self, values, lookahead_window=1):
