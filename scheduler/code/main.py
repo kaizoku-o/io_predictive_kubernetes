@@ -33,6 +33,7 @@ v1_api = None
 ##
 #Need To get the IP addresses
 ##
+
 def get_nodes(p):
     logging.info("Getting Nodes!!!")
 
@@ -56,7 +57,10 @@ def get_nodes(p):
 ##
 
 @backoff
-def scheduler(name,node,ns):
+def scheduler(name,model,ns):
+
+    node = get_nodes(model)
+
     logging.info("Putting {0} on {1} in namespace: {2}".format(name,node,ns))
     
     ##
@@ -143,12 +147,13 @@ def main():
         for event in w.stream(v1_api.list_namespaced_pod,namespace):
             logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
             if event['object'].status.phase == "Pending":
+                    
                 if event['object'].spec.scheduler_name == scheduler_cpu:
-                    scheduler(event['object'].metadata.name,get_nodes(model_cpu),namespace)
+                    scheduler(event['object'].metadata.name,model_cpu,namespace)
                 elif event['object'].spec.scheduler_name == scheduler_mem:
-                    scheduler(event['object'].metadata.name,get_nodes(model_mem),namespace)
+                    scheduler(event['object'].metadata.name,model_mem,namespace)
                 elif event['object'].spec.scheduler_name == scheduler_io:
-                    scheduler(event['object'].metadata.name,get_nodes(model_io),namespace)
+                    scheduler(event['object'].metadata.name,model_io,namespace)
 
 
 if __name__ == '__main__':
