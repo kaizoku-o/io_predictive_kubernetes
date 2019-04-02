@@ -6,6 +6,7 @@ from Predictor import Predictor
 
 class RequestResponseHandler:
 	def __init__(self, apiName):
+		self.data_ = {}
 		self.apiName_ = apiName
 
 	apiName_ = ""
@@ -13,6 +14,34 @@ class RequestResponseHandler:
 	# encode a json object and return it
 	def encode(self):
 		pass
+
+class AccuracyHandler(RequestResponseHandler):
+	def __init__(self):
+		super().__init__('getAccuracy')
+
+	def process(self):
+		data = pdHandler.get_data()
+
+		pred = Predictor()
+		for ip in data:
+			values = data[ip]
+			self.data_[ip] = pred.accuracy(values)
+
+	def encode(self):
+		accuracy = {}
+		metric = {}
+		accuracy['accuracy'] = self.data_
+		metric['metric'] = 'rmse'
+
+		jsonList = []
+		jsonList.append(accuracy)
+		jsonList.append(metric)
+
+		lst = []
+		lst.append(jsonList)
+
+		json_data = json.dumps(lst)
+		return json_data
 
 class WorkloadPredictionHandler(RequestResponseHandler):
 	def __init__(self):

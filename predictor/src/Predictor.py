@@ -3,6 +3,13 @@ from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing
 import statsmodels.api as sm
 import numpy as np
 from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+import logging
+
+log_format='%(asctime)s - %(process)d - %(levelname)s - %(message)s'
+logging.basicConfig(filename='predictor.log', filemode='a', 
+	format=log_format, level=logging.DEBUG)
 
 class Predictor:
 	model_list_ = []
@@ -10,6 +17,7 @@ class Predictor:
 	def __init__(self):
 		pass
 	
+	# problems with this
 	def arima(self, values, law=1):
 		p = 5 # lag observations
 		d = 1 # degree of differencing
@@ -68,7 +76,7 @@ class Predictor:
 	# double exponential smoothing
 	def holtWinters_des(self, values, law=1):
 		Y_Train = [x[1] for x in values]
-		model = ExponentialSmoothing(Y_Train, seasonal_periods=20, 
+		model = ExponentialSmoothing(Y_Train, seasonal_periods=5, 
 			trend='add', seasonal='add').fit(use_boxcox=True)
 		predictions = model.forecast(law)
 		return predictions
@@ -104,5 +112,46 @@ class Predictor:
 		predictions = model.predict(X_Pred)
 		return predictions
 
+	def accuracy(self, values, split_percent = 70):
+		"""
+		Give the accuracy for a prediction algorithm
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Root Mean Squared Error for a prediction algorithm
+		"""	
+		train_samples = int(len(values)*split_percent/100)
+
+		values_train = values[0:train_samples]
+		values_test = values[train_samples:]
+		test_samples = len(values_test)
+
+		logging.debug(f"Length of training set is {train_samples}")
+		logging.debug(f"Predicting {test_samples} values")
+
+		y_true = [x[1] for x in values_test]
+
+		try:
+			y_pred = self.guassian_svr(values_train, len(values_test))
+			# Using rmse as it is sensitive to outliers. 
+			# Good rmse will depend on the range of values we are trying to predict
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined")
+		
+		logging.debug(f'RMSE: {rmse}')
+		return rmse
+
 	def get_prediction(self, values, lookahead_window=1):
-		return self.wma(values, lookahead_window)
+		prediction = []
+		try:
+			logging.warning("Using arima")
+			prediction = self.arima(values, lookahead_window)
+
+		except ValueError:
+			logging.error("Exception ocurred so falling back to wma")
+			prediction = self.wma(values)
+
+		return prediction
