@@ -1,6 +1,7 @@
 from BaseDataHandler import BaseDataHandler
 from prometheusQueries import Queries
 from prometheusUtils import run_query_range
+import time
 
 class PrometheusDataHandler(BaseDataHandler):
 	def __init__(self):
@@ -13,8 +14,12 @@ class PrometheusDataHandler(BaseDataHandler):
 			No arguments
 		Returns:
 			A dictionary of Node_IP -> list of tuples(time, workload)
-		"""		
-		result = run_query_range(Queries["cpu"], 1552290000, 1552320000, 60)
+		"""	
+		end_time = int(time.time())
+		hrs = 6
+		start_time = end_time - 60*60*hrs
+
+		result = run_query_range(Queries["cpu"], start_time, end_time, 60)
 		hosts = {x[0] for x in result}
 		response = {}
 
