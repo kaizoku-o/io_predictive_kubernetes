@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Deleting containers"
+for each in `/usr/bin/docker ps -a -q`; do /usr/bin/docker rm -f $each; done
+echo "Deleted containers"
+/usr/bin/docker ps -a

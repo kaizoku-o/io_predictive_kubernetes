@@ -120,10 +120,37 @@
             dest: /etc/prometheus/prometheus.yml
             mode: 0644
         
+        - name: "Uploading daemon.json"
+          copy:
+                  src: ./config/docker/daemon.json
+                  dest: /etc/docker/daemon.json
+        
         - name: "Configure prometheus init file"
           template:
             src: prometheus.service_template.j2
             dest: /etc/systemd/system/prometheus.service
+
+        - name: "Add custom script"
+          template:
+            src: deletecontainerscript.j2
+            dest: /etc/systemd/system/deleteallcontainer.sh
+
+        - name: "Enable execute permission"
+          command: "chmod +x /etc/systemd/system/deleteallcontainer.sh"
+
+        - name: "Configure tetris-predictor service"
+          template:
+            src: tetris-predictor_service.j2
+            dest: /etc/systemd/system/tetris-predictor.service
+
+        - name: "Enable tetris predictor"
+          command: "systemctl daemon-reload && systemctl enable tetris-predictor"
+
+        - name: "Start tetris-predictor"
+          systemd:
+            name: tetris-predictor
+            state: started
+            enabled: yes
 
         - name: "Enable prometheus"
           command: "systemctl enable prometheus"
