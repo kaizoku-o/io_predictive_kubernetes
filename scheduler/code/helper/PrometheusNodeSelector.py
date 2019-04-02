@@ -4,6 +4,8 @@ from .PrometheusQuery import get_predict_workload
 import sys
 import json
 import logging
+import random
+
 logging.basicConfig(level=logging.INFO)
 
 class PrometheusNodeSelector(GenericNodeSelector):
@@ -33,5 +35,10 @@ class PrometheusNodeSelector(GenericNodeSelector):
                 except KeyError:
                     pass
 
-            raise RuntimeError("Failed To select A Node")
-
+            logging.info("Failed to get find Nodes\nFalling back to random selection");
+            k8_nodes = nodeList.keys();
+            if len(k8_nodes) > 1:
+                selection = random.randint(0,len(k8_nodes)-1);
+                return k8_nodes[selection]
+            else:
+                return k8_nodes[0]
