@@ -1,5 +1,6 @@
 from RequestParser import RequestParser
 from RequestResponseHandler import WorkloadPredictionHandler
+from RequestResponseHandler import AccuracyHandler
 
 # Create a RequestParserObject
 requestParser = RequestParser()
@@ -8,7 +9,10 @@ requestParser = RequestParser()
 # Each handler will support an api
 # Right now we will have only 1 api which is for predicting workloads
 workLoadPred = WorkloadPredictionHandler()
+accuracyHandler = AccuracyHandler()
+
 requestParser.registerHandler(workLoadPred)
+requestParser.registerHandler(accuracyHandler)
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)

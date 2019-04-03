@@ -3,6 +3,10 @@ from .PrometheusQuery import get_predict_workload
 
 import sys
 import json
+import logging
+import random
+
+logging.basicConfig(level=logging.INFO)
 
 class PrometheusNodeSelector(GenericNodeSelector):
     def __init__(self,alg,api,log_collector=None):
@@ -16,6 +20,7 @@ class PrometheusNodeSelector(GenericNodeSelector):
             raise RuntimeError("No Nodes To select From")
         else:
             node_workloads = get_predict_workload(self.api,self.alg)
+            logging.info(node_workloads);
             for node_ip in node_workloads:
                 try:
                     ip = node_ip[0].split(':')[0]
@@ -23,13 +28,17 @@ class PrometheusNodeSelector(GenericNodeSelector):
                         "Data" : node_workloads,
                         "Choice" : nodeList[ip]
                     }
-                    print(msg);
-                    sys.stdout.flush()
+                    logging.info(msg)
                     if self.log_collector:
                         self.log_collector.write_log(json.dumps(msg))
                     return nodeList[ip]
                 except KeyError:
                     pass
 
-            raise RuntimeError("Failed To select A Node")
-
+            logging.info("Failed to get find Nodes\nFalling back to random selection");
+            k8_nodes = nodeList.keys();
+            if len(k8_nodes) > 1:
+                selection = random.randint(0,len(k8_nodes)-1);
+                return k8_nodes[selection]
+            else:
+                return k8_nodes[0]

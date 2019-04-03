@@ -6,7 +6,8 @@ from kubernetes import client,config,watch
 from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
-from helper.StatsCollector import StatsCollector
+from helper.GenericStatsCollector import GenericStatsCollector
+from helper.SchedulerDeclators import backoff
 
 ##
 #Globals
@@ -32,6 +33,7 @@ v1_api = None
 ##
 #Need To get the IP addresses
 ##
+
 def get_nodes(p):
     logging.info("Getting Nodes!!!")
 
@@ -49,11 +51,16 @@ def get_nodes(p):
 
     return p.node_selection(ready_nodes)
 
+##
+#Might need Error handling by leveraging an error queue
+#We need to use a decorator
+##
 
-##
-#Might need Error handling by leveraging an error queue 
-##
-def scheduler(name,node,ns):
+@backoff
+def scheduler(name,model,ns):
+
+    node = get_nodes(model)
+
     logging.info("Putting {0} on {1} in namespace: {2}".format(name,node,ns))
     
     ##
@@ -77,14 +84,7 @@ def scheduler(name,node,ns):
     ##
     #Its likely going to error due to a bug we can try catch it and ignore it
     ##
-    try:
-        v1_api.create_namespaced_binding(namespace=ns,body=body)
-    except ApiException as e:
-        pass
-    except ValueError as e:
-        logging.warning("Recieved ValueError for Null target, Ignoring because https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558\n")
-    except RuntimeError as e:
-        logging.warning(e);
+    return v1_api.create_namespaced_binding(namespace=ns,body=body)
 
 
 def init():
@@ -119,7 +119,7 @@ def init():
     scheduler_mem = scheduler_base + "-mem"
     scheduler_io = scheduler_base + "-io"
     
-    log_collector = StatsCollector()
+    log_collector = GenericStatsCollector()
 
     model_cpu = pns("cpu",prometheus_api,log_collector)
     model_mem = pns("mem",prometheus_api,log_collector)
@@ -134,24 +134,26 @@ def init():
     config.load_kube_config()
     v1_api = client.CoreV1Api()
 
-def main():
 
+
+def main():
     init();
 
     logging.basicConfig(level=logging.INFO)
-    logging.info("Starting to Schedular pods for {0} in namespace: {1}".format("tetis",namespace))
+    logging.info("Starting to Schedular pods for Tetris in namespace: {0}".format(namespace))
     w = watch.Watch()
 
     while True:
         for event in w.stream(v1_api.list_namespaced_pod,namespace):
             logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
             if event['object'].status.phase == "Pending":
+                    
                 if event['object'].spec.scheduler_name == scheduler_cpu:
-                    scheduler(event['object'].metadata.name,get_nodes(model_cpu),namespace)
+                    scheduler(event['object'].metadata.name,model_cpu,namespace)
                 elif event['object'].spec.scheduler_name == scheduler_mem:
-                    scheduler(event['object'].metadata.name,get_nodes(model_mem),namespace)
+                    scheduler(event['object'].metadata.name,model_mem,namespace)
                 elif event['object'].spec.scheduler_name == scheduler_io:
-                    scheduler(event['object'].metadata.name,get_nodes(model_io),namespace)
+                    scheduler(event['object'].metadata.name,model_io,namespace)
 
 
 if __name__ == '__main__':
