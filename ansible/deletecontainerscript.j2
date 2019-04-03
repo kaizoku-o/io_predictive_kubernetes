@@ -1,5 +1,13 @@
 #!/bin/bash
 
+echo "Trying to pull new image"
+echo "Check if k8smaster is available and pull the image"
+nc -vz -w 3 172.31.15.135 5000
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+	/usr/bin/docker pull 172.31.15.135:5000/tetris:predictor
+fi
+
 echo "Deleting containers"
 for each in `/usr/bin/docker ps -a -q`; do /usr/bin/docker rm -f $each; done
 echo "Deleted containers"

@@ -5,7 +5,6 @@ Requires=docker.service
 
 [Service]
 TimeoutStartSec=0
-ExecStartPre=/usr/bin/docker pull 172.31.15.135:5000/tetris:predictor
 ExecStartPre=/etc/systemd/system/deleteallcontainer.sh
 ExecStart=/usr/bin/docker run --name tetris-predictor -p 9580:9580 172.31.15.135:5000/tetris:predictor
 
