@@ -6,7 +6,7 @@ from kubernetes import client,config,watch
 from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
-
+from helper.StatsCollector import StatsCollector
 
 ##
 #Globals
@@ -75,18 +75,16 @@ def scheduler(name,node,ns):
     body = client.V1Binding(target=target,metadata=meta)
 
     ##
-    #Needs Error handing here.
-    #kubernetes.client.rest.ApiException
-    ##
     #Its likely going to error due to a bug we can try catch it and ignore it
     ##
     try:
         v1_api.create_namespaced_binding(namespace=ns,body=body)
     except ApiException as e:
         pass
-        #logging.warning("Error has occured calling Create_namespaced_binding\n {0}\n".format(e));
     except ValueError as e:
         logging.warning("Recieved ValueError for Null target, Ignoring because https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558\n")
+    except RuntimeError as e:
+        logging.warning(e);
 
 
 def init():
@@ -117,15 +115,15 @@ def init():
     else:
         prometheus_api = "http://127.0.0.1:9580/api";
 
-    
-    
     scheduler_cpu = scheduler_base + "-cpu"
     scheduler_mem = scheduler_base + "-mem"
     scheduler_io = scheduler_base + "-io"
+    
+    log_collector = StatsCollector()
 
-    model_cpu = pns("cpu",prometheus_api)
-    model_mem = pns("mem",prometheus_api)
-    model_io = pns("io",prometheus_api)
+    model_cpu = pns("cpu",prometheus_api,log_collector)
+    model_mem = pns("mem",prometheus_api,log_collector)
+    model_io = pns("io",prometheus_api,log_collector)
 
 
     if "NAMESPACE" in ENV:
