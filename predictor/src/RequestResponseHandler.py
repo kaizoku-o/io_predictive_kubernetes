@@ -1,6 +1,6 @@
 import requests
 import json
-from PrometheusDataHandler import PrometheusDataHandler as pdHandler
+from PrometheusDataHandler import PrometheusDataHandler
 from FileHandler import FileHandler
 from Predictor import Predictor
 
@@ -12,14 +12,16 @@ class RequestResponseHandler:
 	apiName_ = ""
 
 	# encode a json object and return it
-	def encode(self):
+	def encode(self, request):
 		pass
 
 class AccuracyHandler(RequestResponseHandler):
 	def __init__(self):
 		super().__init__('getAccuracy')
 
-	def process(self):
+	def process(self, request):
+		model = request['model']
+		pdHandler = PrometheusDataHandler(model)
 		data = pdHandler.get_data()
 
 		pred = Predictor()
@@ -27,7 +29,7 @@ class AccuracyHandler(RequestResponseHandler):
 			values = data[ip]
 			self.data_[ip] = pred.accuracy(values)
 
-	def encode(self):
+	def encode(self, request):
 		accuracy = {}
 		metric = {}
 		accuracy['accuracy'] = self.data_
@@ -48,7 +50,9 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 		self.data_ = {}
 		super().__init__('predictWorkload')
 
-	def process(self):
+	def process(self, request):
+		model = request['model']
+		pdHandler = PrometheusDataHandler(model)
 		data = pdHandler.get_data()
 		
 		# Example of using a fileHandler
@@ -63,13 +67,13 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 			self.data_[ip] = prediction[-1]
 
 	# encode a json response
-	def encode(self):
+	def encode(self, request):
 		workload = {}
 		workloadType = {}
 		workloadUnit = {}
 
 		workload['workload'] = self.data_
-		workloadType['workloadType'] = 'cpu'
+		workloadType['workloadType'] = request['model']
 		workloadUnit['unit'] = 'percent'
 
 		jsonList = []
