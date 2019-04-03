@@ -12,8 +12,8 @@ class RequestParser:
 		for i, handler in enumerate(self.handlers_):
 			if (handler.apiName_ == apiName):
 				# encode a response
-				handler.process()
-				response = handler.encode()
+				handler.process(request)
+				response = handler.encode(request)
 				return response
 				break
 
