@@ -112,7 +112,7 @@ class Predictor:
 		predictions = model.predict(X_Pred)
 		return predictions
 
-	def accuracy(self, values, split_percent = 70):
+	def accuracy(self, values, split_percent = 99):
 		"""
 		Give the accuracy for a prediction algorithm
 		Arguments:
@@ -121,6 +121,9 @@ class Predictor:
 		Returns:
 			Root Mean Squared Error for a prediction algorithm
 		"""	
+
+		model_error_list = []
+
 		train_samples = int(len(values)*split_percent/100)
 
 		values_train = values[0:train_samples]
@@ -137,12 +140,73 @@ class Predictor:
 			# Using rmse as it is sensitive to outliers. 
 			# Good rmse will depend on the range of values we are trying to predict
 			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('gaussian_svr RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'gaussian_svr') )
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for gaussian svr")
+
+		try:
+			y_pred = self.linear_svr(values_train, len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('linear_svr RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'linear_svr') )
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for linear_svr")
+
+		try:
+			y_pred = self.arima(values_train, len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('arima RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'arima') )
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for arima")
+
+
+		try:
+			y_pred = self.linear_regression(values_train, len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('linear regression RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'linear_regression') )
 
 		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined")
-		
-		logging.debug('RMSE: %f', rmse)
-		return rmse
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for linear regression")
+
+		try:
+			y_pred = self. simple_exponential_smoothing(values_train, 
+						len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('simple exponential smoothing RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'simple_exponential_smoothing') )
+
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for simple_exponential_smoothing")
+
+
+		try:
+			y_pred = self.holtWinters_des(values_train, len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('holt des RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'holtWinters_des') )
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for holtWinters_des")
+
+
+		try:
+			y_pred = self.wma(values_train, len(values_test))
+			rmse = sqrt(mean_squared_error(y_true, y_pred))
+			logging.debug('wma RMSE: %f', rmse)
+			model_error_list.append( (rmse, 'wma') )
+		except ValueError:
+			logging.error("Exception ocurred, rmse could not be determined"
+				"for wma")
+
+		return model_error_list
 
 	def get_prediction(self, values, lookahead_window=1):
 		prediction = []
