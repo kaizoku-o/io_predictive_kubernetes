@@ -55,10 +55,13 @@ class AsyncLoadBalance(SimpleLoadBalance):
         self.workers = [];
     
     def populateBestModel(self):
-        self.monitor_handle = threading.Thread(target=self.__monitor)
-        self.monitor_handle.start()
-        return self.monitor_handle;
-    
+        if not self.monitor_handle or not self.monitor_handle.isAlive():
+            self.monitor_handle = threading.Thread(target=self.__monitor)
+            self.monitor_handle.start()
+        else:
+            print("~~~~~~~~~~~~~~~~ALREADY RUNNING~~~~~~~~~~~~~")
+
+        return self.monitor_handle
     def getBestModel(self,model: str) -> str:
     
         self.lock.acquire()
