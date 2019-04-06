@@ -1,10 +1,10 @@
 
-def GenericLoadBalance(object):
+class GenericLoadBalance(object):
 
     def __init__(self):
         pass;
 
-    def best_model(model: str) -> dict:
+    def getBestModel(model: str) -> str:
         pass;
 
 

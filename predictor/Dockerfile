@@ -18,4 +18,5 @@ ADD data/ /usr/bin/data
 
 WORKDIR /usr/bin/src/
 
-ENTRYPOINT ["python3", "./main.py"]
+#ENTRYPOINT ["python3", "./main.py"]
+ENTRYPOINT ["/bin/bash"]

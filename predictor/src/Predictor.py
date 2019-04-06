@@ -155,14 +155,14 @@ class Predictor:
 			logging.error("Exception ocurred, rmse could not be determined"
 				"for linear_svr")
 
-		try:
-			y_pred = self.arima(values_train, len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('arima RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'arima') )
-		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for arima")
+	#	try:
+	#		y_pred = self.arima(values_train, len(values_test))
+	#		rmse = sqrt(mean_squared_error(y_true, y_pred))
+	#		logging.debug('arima RMSE: %f', rmse)
+	#		model_error_list.append( (rmse, 'arima') )
+	#	except ValueError:
+	#		logging.error("Exception ocurred, rmse could not be determined"
+	#			"for arima")
 
 
 		try:
