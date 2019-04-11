@@ -5,7 +5,10 @@ RUN apt-get update && apt-get install -y \
 	python3-pip \
 	python3-dev \
 	libssl-dev \
-	libffi-dev
+	libffi-dev \
+	vim \
+	cron \
+	curl
 
 RUN pip3 install pandas
 RUN pip3 install statsmodels
@@ -18,5 +21,4 @@ ADD data/ /usr/bin/data
 
 WORKDIR /usr/bin/src/
 
-#ENTRYPOINT ["python3", "./main.py"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["python3", "./main.py"]

@@ -11,6 +11,7 @@ log_format='%(asctime)s - %(process)d - %(levelname)s - %(message)s'
 logging.basicConfig(filename='predictor.log', filemode='a', 
 	format=log_format, level=logging.DEBUG)
 
+
 class Predictor:
 	model_list_ = []
 
@@ -50,7 +51,7 @@ class Predictor:
 
 		return predictions
 
-	def guassian_svr(self, values, law=1):
+	def gaussian_svr(self, values, law=1):
 		Y_Train = [x[1] for x in values] # dependent varaible
 		X_Train = [[x[0]] for x in values] # independent variable
 
@@ -136,7 +137,7 @@ class Predictor:
 		y_true = [x[1] for x in values_test]
 
 		try:
-			y_pred = self.guassian_svr(values_train, len(values_test))
+			y_pred = self.gaussian_svr(values_train, len(values_test))
 			# Using rmse as it is sensitive to outliers. 
 			# Good rmse will depend on the range of values we are trying to predict
 			rmse = sqrt(mean_squared_error(y_true, y_pred))
@@ -146,14 +147,23 @@ class Predictor:
 			logging.error("Exception ocurred, rmse could not be determined"
 				"for gaussian svr")
 
-	#	try:
-	#		y_pred = self.arima(values_train, len(values_test))
-	#		rmse = sqrt(mean_squared_error(y_true, y_pred))
-	#		logging.debug('arima RMSE: %f', rmse)
-	#		model_error_list.append( (rmse, 'arima') )
-	#	except ValueError:
-	#		logging.error("Exception ocurred, rmse could not be determined"
-	#			"for arima")
+		# try:
+		# 	y_pred = self.linear_svr(values_train, len(values_test))
+		# 	rmse = sqrt(mean_squared_error(y_true, y_pred))
+		# 	logging.debug('linear_svr RMSE: %f', rmse)
+		# 	model_error_list.append( (rmse, 'linear_svr') )
+		# except ValueError:
+		# 	logging.error("Exception ocurred, rmse could not be determined"
+		# 		"for linear_svr")
+
+		# try:
+		# 	y_pred = self.arima(values_train, len(values_test))
+		# 	rmse = sqrt(mean_squared_error(y_true, y_pred))
+		# 	logging.debug('arima RMSE: %f', rmse)
+		# 	model_error_list.append( (rmse, 'arima') )
+		# except ValueError:
+		# 	logging.error("Exception ocurred, rmse could not be determined"
+		# 		"for arima")
 
 
 		try:
@@ -199,11 +209,18 @@ class Predictor:
 
 		return model_error_list
 
-	def get_prediction(self, values, lookahead_window=1):
+	def get_prediction(self, values, model, lookahead_window=1):
+		from AsyncLoadBalance import AsyncLoadBalance
 		prediction = []
+		precomputeBestModel = AsyncLoadBalance.getInstance()
+
+		bestModel = precomputeBestModel.getBestModel(model)
+		print("bestModel is ", bestModel)
+		logging.debug("Using bestModel %s", bestModel)
+		predictionAlgo = getattr(self, bestModel)
+
 		try:
-			logging.warning("Using arima")
-			prediction = self.arima(values, lookahead_window)
+			prediction = predictionAlgo(values, lookahead_window)
 
 		except ValueError:
 			logging.error("Exception ocurred so falling back to wma")

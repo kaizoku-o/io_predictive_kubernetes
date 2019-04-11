@@ -1,16 +1,19 @@
 from PrometheusDataHandler import PrometheusDataHandler
 from Predictor import Predictor
 from GenericLoadBalance import GenericLoadBalance
-
 import logging
 import operator
 
-class SimpleLoadBalance(GenericLoadBalance):
+log_format='%(asctime)s - %(process)d - %(levelname)s - %(message)s'
+logging.basicConfig(filename='predictor.log', filemode='a', 
+    format=log_format, level=logging.DEBUG)
 
+
+class SimpleLoadBalance(GenericLoadBalance):
     def __init__(self):
         pass
-
-    def __findBestModel(self,model: str) -> str:
+        
+    def __findBestModel(self, model: str) -> str:
         pred = Predictor()
 
         pdHandler = PrometheusDataHandler(model);
@@ -19,14 +22,14 @@ class SimpleLoadBalance(GenericLoadBalance):
         results = {};
 
         count = 0.0
-        print("running")
+        logging.debug("Running findBestModel in SimpleLoadBalance")
         #data = { ip, vals }
         for ip in data:
             # data_values = [ (name,value) ]
             values = data[ip]
             data_values = pred.accuracy(values);
             for r in data_values:
-                print(r)
+                # print(r)
                 try:
                     results[r[1]] += r[0]
                     #some times it is better to ask for forgiveness than permission :)
@@ -45,5 +48,4 @@ class SimpleLoadBalance(GenericLoadBalance):
         return order_acc[0][0];
 
     def getBestModel(self,model: str) -> str:
-
         return self.__findBestModel(model)
