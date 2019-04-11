@@ -17,6 +17,9 @@ RUN pip3 install flask
 RUN pip3 install requests
 
 ADD src /usr/bin/src/
+
+RUN chmod +x /usr/bin/src/precompute_scheduler.sh
+
 ADD data/ /usr/bin/data
 
 WORKDIR /usr/bin/src/
