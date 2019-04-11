@@ -25,5 +25,4 @@ ADD data/ /usr/bin/data
 
 WORKDIR /usr/bin/src/
 RUN /bin/bash -c "source /usr/bin/src/install_cron_entry.sh"
-CMD service cron start
 ENTRYPOINT ["python3", "./main.py"]

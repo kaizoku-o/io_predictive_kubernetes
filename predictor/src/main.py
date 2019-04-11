@@ -3,6 +3,10 @@ from RequestResponseHandler import WorkloadPredictionHandler
 from RequestResponseHandler import AccuracyHandler
 from SimpleLoadBalance import SimpleLoadBalance
 from AsyncLoadBalance import AsyncLoadBalance
+import subprocess
+
+# Starting cron service to periodically invoke precompute model
+subprocess.call('service cron start', shell=True)
 
 # Create a RequestParserObject
 requestParser = RequestParser()
