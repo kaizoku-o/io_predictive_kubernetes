@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+ diffFROM ubuntu:xenial
 
 RUN apt-get update && apt-get install -y \
 	python3 \
@@ -25,5 +25,4 @@ ADD data/ /usr/bin/data
 
 WORKDIR /usr/bin/src/
 RUN /bin/bash -c "source /usr/bin/src/install_cron_entry.sh"
-CMD service cron start
 ENTRYPOINT ["python3", "./main.py"]
