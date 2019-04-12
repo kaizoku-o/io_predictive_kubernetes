@@ -1,11 +1,10 @@
-import logging
-
 from time import time
 from kubernetes.client.rest import ApiException
+import logit
 
 scheduler_state = {};
 backoff_count = 1.0;
-logging.basicConfig(level=logging.INFO)
+logging = logit.get_logger()
 
 def backoff(func):
    global scheduler_state

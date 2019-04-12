@@ -4,7 +4,7 @@ from GenericLoadBalance import GenericLoadBalance
 import logging
 import operator
 
-log_format='%(asctime)s - %(process)d - %(levelname)s - %(message)s'
+log_format='%(asctime)s - %(process)d - %(levelname)s - %(filename)s - %(funcName)s - %(message)s'
 logging.basicConfig(filename='predictor.log', filemode='a', 
     format=log_format, level=logging.DEBUG)
 

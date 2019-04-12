@@ -1,9 +1,9 @@
 import json
+import logit
 
 class GenericStatsCollector(object):
     def __init__(self):
-        self.fin = open("./decision.log","w");
+        self.logging = logit.get_logger()
 
     def write_log(self,msg):
-        self.fin.write(msg + "\n");
-        self.fin.flush();
+        self.logging.info(msg)

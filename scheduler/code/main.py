@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-
-import logging
-
 from kubernetes import client,config,watch
 from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
 from helper.GenericStatsCollector import GenericStatsCollector
 from helper.SchedulerDeclators import backoff
+import logit
 
+logging = logit.get_logger()
 ##
 #Globals
 ##
@@ -35,7 +34,7 @@ v1_api = None
 ##
 
 def get_nodes(p):
-    logging.info("Getting Nodes!!!")
+    logging.info("Getting Nodes")
 
     ready_nodes = {}
     for k8_node in v1_api.list_node().items:
@@ -145,7 +144,7 @@ def main():
 
     while True:
         for event in w.stream(v1_api.list_namespaced_pod,namespace):
-            logging.info("Event Triggered!!! Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
+            logging.info("Event Triggered. Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
             if event['object'].status.phase == "Pending":
                     
                 if event['object'].spec.scheduler_name == scheduler_cpu:
