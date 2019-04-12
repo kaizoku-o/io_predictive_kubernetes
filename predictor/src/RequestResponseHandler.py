@@ -63,7 +63,7 @@ class WorkloadPredictionHandler(RequestResponseHandler):
 			# values is a tuple (time, workload)
 			values = data[ip]
 			pred = Predictor()
-			prediction = pred.get_prediction(values)
+			prediction = pred.get_prediction(values, model)
 			self.data_[ip] = prediction[-1]
 
 	# encode a json response
