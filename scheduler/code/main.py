@@ -5,7 +5,7 @@ from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
 from helper.GenericStatsCollector import GenericStatsCollector
 from helper.SchedulerDeclators import backoff
-import logit
+import helper.logit as logit
 
 logging = logit.get_logger()
 ##

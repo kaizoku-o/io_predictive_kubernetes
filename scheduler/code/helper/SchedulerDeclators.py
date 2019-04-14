@@ -1,6 +1,6 @@
 from time import time
 from kubernetes.client.rest import ApiException
-import logit
+from . import logit
 
 scheduler_state = {};
 backoff_count = 1.0;

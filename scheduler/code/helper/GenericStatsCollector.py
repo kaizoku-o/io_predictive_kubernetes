@@ -1,5 +1,5 @@
 import json
-import logit
+from . import logit
 
 class GenericStatsCollector(object):
     def __init__(self):
