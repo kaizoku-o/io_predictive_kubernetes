@@ -1,7 +1,8 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: tetris-pv-volume
+  name: tetris-volume-v1
+  namespace: kube-system
   labels:
     type: local
 spec:
@@ -11,4 +12,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data"
+    path: "/mnt/tetris/"

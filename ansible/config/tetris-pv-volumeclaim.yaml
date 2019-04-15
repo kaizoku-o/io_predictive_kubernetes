@@ -1,7 +1,8 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: tetris-pv-claim
+  name: tetris-claim-v1
+  namespace: kube-system
 spec:
   storageClassName: manual
   accessModes:

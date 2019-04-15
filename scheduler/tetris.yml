@@ -44,7 +44,12 @@ spec:
         image: 172.31.15.135:5000/tetris
         securityContext:
           privileged: false
-        volumeMounts: []
+        volumeMounts:
+        - mountPath: "/var/log"
+          name: tetris-pv-storage
       hostNetwork: false
       hostPID: false
-      volumes: []
+      volumes:
+      - name: tetris-pv-storage
+        persistentVolumeClaim:
+         claimName: tetris-claim-v1
