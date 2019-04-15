@@ -1,12 +1,13 @@
 from .GenericNodeSelector import GenericNodeSelector
 from .PrometheusQuery import get_predict_workload
+from . import logit
 
 import sys
 import json
-import logging
 import random
 
-logging.basicConfig(level=logging.INFO)
+
+logging = logit.get_logger()
 
 class PrometheusNodeSelector(GenericNodeSelector):
     def __init__(self,alg,api,log_collector=None):
@@ -35,7 +36,7 @@ class PrometheusNodeSelector(GenericNodeSelector):
                 except KeyError:
                     pass
 
-            logging.info("Failed to get find Nodes\nFalling back to random selection");
+            logging.info("Falling back to random selection");
             k8_nodes = nodeList.keys();
             if len(k8_nodes) > 1:
                 selection = random.randint(0,len(k8_nodes)-1);

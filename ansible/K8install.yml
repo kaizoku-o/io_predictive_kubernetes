@@ -51,6 +51,15 @@
             state: started
             enabled: yes
 
+        - name: "Create a persistent mount directory"
+          command: "mkdir /mnt/data"
+        
+        - name: "Set up persistent volume for pods"
+          command: "kubectl apply -f ./config/tetris-pv-volume.yaml"
+        
+        - name: "Set up persistent volume claim for pods to use"
+          command: "kubectl apply -f ./config/tetris-pv-volumeclaim.yaml"
+
 
 - name: configuring K8master 
   hosts: K8master

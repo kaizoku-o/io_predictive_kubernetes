@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 from math import sqrt
 import logging
 
-log_format='%(asctime)s - %(process)d - %(levelname)s - %(message)s'
+log_format='%(asctime)s - %(process)d - %(levelname)s - %(filename)s - %(funcName)s - %(message)s'
 logging.basicConfig(filename='predictor.log', filemode='a', 
 	format=log_format, level=logging.DEBUG)
 
