@@ -7,23 +7,22 @@ backoff_count = 1.0;
 logging = logit.get_logger()
 
 def backoff(func):
-   global scheduler_state
-   global backoff_count
-
-   ts = time()
-
-   shadow_copy = dict(scheduler_state);
-
-   for k,v in scheduler_state.items():
-      if v['te'] < ts:
-         del shadow_copy[k];
-
-   scheduler_state = shadow_copy
    
    def wrapper(*args, **kw):
       global scheduler_state
       global backoff_count
+
+      ts = time()
+
+      shadow_copy = dict(scheduler_state);
+
+      for k,v in scheduler_state.items():
+         if v['te'] < ts:
+            del shadow_copy[k];
+
+      scheduler_state = shadow_copy
       pod = args[0];
+
       if pod in scheduler_state:
          logging.info(pod + ": A Scheduling attempt has already occured: Ignore");
       else:
