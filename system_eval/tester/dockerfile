@@ -6,6 +6,6 @@ WORKDIR /src/app
 
 ADD . .
 
-ENV MYSQL_ROOT_PASSWORD=testmysql
+ENV MYSQL_ROOT_PASSWORD=testmysqlWithComplexity
 
 CMD ["python","./tester.py"]

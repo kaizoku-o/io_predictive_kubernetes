@@ -7,6 +7,7 @@ import logging
 import csv
 import string
 import random
+import json
 
 random.seed(7331)
 
@@ -19,9 +20,15 @@ def gen_random():
 
 def experiment(name):
 	def record_response(func):
+		record_response.counter = {}
 		def wrapper(*args, **kwargs):
 			global data_store
-			
+
+			try:
+				record_response.counter[name] += 1
+			except KeyError as e:
+				record_response.counter[name] = 1
+
 			ts = time.time()
 			results = func(*args,**kwargs)
 			te = time.time()
@@ -31,7 +38,7 @@ def experiment(name):
 			except KeyError as e:
 				data_store[name] = [[ts,te,te-ts]]
 
-			print("Finished {0}\n\tTS: {1}\n\tTE: {2}\n\tTime: {3}\n".format(name,ts,te,te-ts))
+			print("Finished {0} Count {1}\n\tTS: {2}\n\tTE: {3}\n\tTime: {4}\n".format(name,record_response.counter[name],ts,te,te-ts))
 
 			return results
 		return wrapper
@@ -41,8 +48,8 @@ def experiment(name):
 ################################START OF CODE##################################################
 
 ips = [
-	"192.168.115.127",
-	"192.168.115.128"
+	"172.31.15.135",
+	"172.31.15.164"
 ]
 
 cnx = None
@@ -71,11 +78,8 @@ else:
 #Step 1
 ##
 cur = cnx.cursor()
-
 cur.execute("DROP DATABASE IF EXISTS testdb")
-
 cur.execute("CREATE DATABASE testdb")
-
 cur.execute("use testdb")
 ##
 #Finished creating my DB
@@ -85,16 +89,31 @@ cur.execute("DROP TABLE IF EXISTS user_test")
 cur.execute("CREATE TABLE user_test (id INT AUTO_INCREMENT PRIMARY KEY,user VARCHAR(255), pwd VARCHAR(255))")
 
 
-for i in range(10000):
+for i in range(100):
 	record.append([gen_random(),gen_random()])
 
-
-
 @experiment("write")
-def write_record(record,cur):
+def write_record(record,cur,cnx):
 	sql = "INSERT INTO user_test (user, pwd) VALUES (%s,%s)"
 	val = (record[0],record[1])
 	cur.execute(sql,val)
+	cnx.commit()
+
+@experiment("read")
+def read_record(record,cur,cnx):
+	sql = "SELECT COUNT(*) FROM user_test WHERE user LIKE %s"
+	val = (record[0],)
+	cur.execute(sql,val)
+	cur.fetchall()
 
 for i in record:
-	write_record(i,cur)
+	write_record(i,cur,cnx)
+
+for i in record:
+	read_record(i,cur,cnx)
+
+fout = open('/data/query_results.json','w');
+fout.write(json.dumps(data_store))
+fout.close()
+
+print("finished :)")
