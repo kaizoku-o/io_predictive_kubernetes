@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  mysql_db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=testmysql
+    ports:
+      - target: 3306
+        published: 3306
+        protocol: tcp
+        mode: host
