@@ -210,20 +210,22 @@ class Predictor:
 		return model_error_list
 
 	def get_prediction(self, values, model, lookahead_window=1):
-		from AsyncLoadBalance import AsyncLoadBalance
-		prediction = []
-		precomputeBestModel = AsyncLoadBalance.getInstance()
+		Y_Train = [x[1] for x in values]
 
-		bestModel = precomputeBestModel.getBestModel(model)
-		print("bestModel is ", bestModel)
-		logging.debug("Using bestModel %s", bestModel)
-		predictionAlgo = getattr(self, bestModel)
+		# from AsyncLoadBalance import AsyncLoadBalance
+		# prediction = []
+		# precomputeBestModel = AsyncLoadBalance.getInstance()
 
-		try:
-			prediction = predictionAlgo(values, lookahead_window)
+		# bestModel = precomputeBestModel.getBestModel(model)
+		# print("bestModel is ", bestModel)
+		# logging.debug("Using bestModel %s", bestModel)
+		# predictionAlgo = getattr(self, bestModel)
 
-		except ValueError:
-			logging.error("Exception ocurred so falling back to wma")
-			prediction = self.wma(values)
+		# try:
+		# 	prediction = predictionAlgo(values, lookahead_window)
 
-		return prediction
+		# except ValueError:
+		# 	logging.error("Exception ocurred so falling back to wma")
+			# prediction = self.wma(values)
+
+		return Y_Train[end]
