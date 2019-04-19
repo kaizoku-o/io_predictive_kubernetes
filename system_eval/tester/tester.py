@@ -89,7 +89,7 @@ cur.execute("DROP TABLE IF EXISTS user_test")
 cur.execute("CREATE TABLE user_test (id INT AUTO_INCREMENT PRIMARY KEY,user VARCHAR(255), pwd VARCHAR(255))")
 
 
-for i in range(100):
+for i in range(10000):
 	record.append([gen_random(),gen_random()])
 
 @experiment("write")
