@@ -228,4 +228,4 @@ class Predictor:
 		# 	logging.error("Exception ocurred so falling back to wma")
 			# prediction = self.wma(values)
 
-		return Y_Train[end]
+		return Y_Train
