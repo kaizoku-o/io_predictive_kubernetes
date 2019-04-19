@@ -1,0 +1,11 @@
+FROM python:3.7
+
+RUN pip install mysql-connector-python
+
+WORKDIR /src/app
+
+ADD . .
+
+ENV MYSQL_ROOT_PASSWORD=testmysqlWithComplexity
+
+CMD ["python","./tester.py"]
