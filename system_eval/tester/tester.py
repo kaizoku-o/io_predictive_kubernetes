@@ -63,7 +63,8 @@ except KeyError as e:
 
 for ip in ips:
 	try:
-		cnx = mysql.connector.connect(user='root',password=mysql_root_password,host=ip)
+		cnx = mysql.connector.connect(user='root',password=mysql_root_password,port=32352,host=ip)
+		break;
 	except Exception as e:
 		pass
 
