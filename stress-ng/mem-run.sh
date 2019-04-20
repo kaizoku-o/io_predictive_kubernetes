@@ -51,29 +51,20 @@ case $opt in
 
     "io")
         echo "#### Executing I/O stressors";
-        let "aio_workers=1 + $RANDOM % 4"
-
-        # Add some asynchronous io calls. From experiments they do not exercise
-        # significant cpu.
-        command_const="/usr/bin/stress-ng --aio $aio_workers";
-        echo "Executing $command_const";
-        ( $command_const; )&
 
         while true; do
             # Keeping only upto 3 workers for hdd and utime as they seem to
             # exercise cpu significantly
-            let "hdd_workers=$RANDOM % 3";
-            let "utime_workers=$RANDOM % 3";
-            let "timeout=$RANDOM % 10";
+            let "timeout=5 + $RANDOM % 2";
+            let "iomix=2 + $RANDOM % 5";
+            let "randomdelay=10 + $RANDOM % 15";
 
-            command_var="/usr/bin/stress-ng --hdd $hdd_workers
-                                            --utime $utime_workers --utime-fsync
-                                            -t "$timeout"m";
+            command_var="stress-ng --iomix $iomix --iomix-bytes 1g -t $timeout"
 
             echo "Executing $command_var";
             $command_var;
-            let "sleep_time=20 + $RANDOM % 160";
-            "`sleep $sleep_time`";
+            echo "Pausing for $randomdelay seconds";
+            sleep $randomdelay;
         done;
         ;;
 esac
