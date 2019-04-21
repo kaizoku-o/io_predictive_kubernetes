@@ -4,14 +4,15 @@ import json
 
 
 percentile = {
-	"write" : 0.012407188415527352,
-	"read" : 0.004351863861083985
+	"write" : 0.011838204860687252,
+	"read" : 0.028472673892974847
 }
 
 files_to_analyze = [
-	"./stock_stressor_1.json",
-	"./stock_stressor_2.json",
-	"./stock_stressor_3.json"
+	"./stock_1.json",
+	"./stock_4.json",
+	"./stock_8.json",
+	"./stock_16.json"
 ]
 
 out_csv = "results.csv"
@@ -19,17 +20,17 @@ out_csv = "results.csv"
 
 def analysis(name,experiment,data_to_analyze):
 	data = []
-	count = 0
+	count = 0.0
 	for d in data_to_analyze:
 
 		if d[2] >= percentile[experiment]:
-			count += 1
+			count += 1.0
 	
 		data.append(d[2]) #we only need the response time
 
 	average = np.average(data,axis=0)
 	stdev = np.std(data,axis=0)
-	SLO_VIO = count / 10000.0
+	SLO_VIO = count / float(len(data))
 
 	return [name,experiment,average,stdev,SLO_VIO]
 
