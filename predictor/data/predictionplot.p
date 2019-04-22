@@ -1,4 +1,4 @@
-set terminal png size 700,500 enhanced font "Times,26"
+set terminal png size 700,500 enhanced font "Helvetica,18"
 set title "I/O Utilization Prediction using ARIMA"
 set ylabel "Disk I/O Utilization (%)"
 set xlabel "Time in (Seconds)"
