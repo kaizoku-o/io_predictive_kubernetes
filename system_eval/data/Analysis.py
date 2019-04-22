@@ -12,7 +12,11 @@ files_to_analyze = [
 	"./stock_1.json",
 	"./stock_4.json",
 	"./stock_8.json",
-	"./stock_16.json"
+	"./stock_16.json",
+	"./tetris_1.json",
+	"./tetris_4.json",
+	"./tetris_8.json",
+	"./tetris_16.json"
 ]
 
 out_csv = "results.csv"
