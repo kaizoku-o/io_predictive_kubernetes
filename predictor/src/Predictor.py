@@ -49,7 +49,7 @@ class Predictor:
 		warnings.filterwarnings('ignore')
 		Y_Train = []
 		for i in range(0, len(values), 6):
-			Y_Train.append(values[1])
+			Y_Train.append(values[i][1])
 
 		model = ExponentialSmoothing(Y_Train, seasonal_periods=50, 
 			seasonal='add').fit(use_boxcox=True)
@@ -58,7 +58,8 @@ class Predictor:
 
 	# weighted moving average
 	def wma(self, values, law=6):
-		Y_Train = np.array([x[1] for x in values])
+		values_win = values[-6:-1]
+		Y_Train = np.array([x[1] for x in values_win])
 		prediction = []
 
 		for i in range(law):
@@ -182,5 +183,5 @@ class Predictor:
 		except:
 			logging.error("Exception ocurred so falling back to wma")
 			prediction = self.wma(values)
-
+		precompute.populateBestModel()
 		return prediction

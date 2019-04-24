@@ -33,7 +33,7 @@ class AccuracyHandler(RequestResponseHandler):
 		accuracy = {}
 		metric = {}
 		accuracy['accuracy'] = self.data_
-		metric['metric'] = 'rmse'
+		metric['metric'] = 'meanErrorPercent'
 
 		jsonList = []
 		jsonList.append(accuracy)
