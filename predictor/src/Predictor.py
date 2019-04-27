@@ -11,79 +11,93 @@ log_format='%(asctime)s - %(process)d - %(levelname)s - %(filename)s - %(funcNam
 logging.basicConfig(filename='predictor.log', filemode='a', 
 	format=log_format, level=logging.DEBUG)
 
+def mean_absolute_percentage_error(y_true, y_pred): 
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 class Predictor:
+	# model_list_ if you want to save the models
 	model_list_ = []
 
 	def __init__(self):
 		pass
 	
-	# problems with this
-	def arima(self, values, law=1):
+	def arima(self, values, law=6):
+		"""
+		ARIMA function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
+		import warnings
+		warnings.filterwarnings('ignore')
+
+		# p, d, q values have been determined through offline analysis
+		# of a dataset that we generated using stress-ng stressors.
+		# We settled on these values through a grid search 
+		# (p, d, q) => (0-10, 0-5, 0-5) and using of the lower aic values.
+		# To get good accuracy this must be manually retuned.
+
 		p = 5 # lag observations
-		d = 1 # degree of differencing
-		q = 0 # order/size of moving average
+		d = 0 # degree of differencing
+		q = 3 # order/size of moving average
 
 		X_Train = [x[1] for x in values]
 
-		for i in range(law):
-			model = ARIMA(X_Train, order=(p, d, q))
-			model_fit = model.fit(disp = 0)
-			prediction = model_fit.forecast()[0]
-			X_Train.append(prediction)
+		predictions = []
+		model = ARIMA(X_Train, order=(p, d, q))
+		model_fit = model.fit()
+		predictions.append(model_fit.forecast(steps=law)[0])
+		return 	predictions[-1]
 
-		return 	prediction
-
-	def linear_svr(self, values, law=1):
-		Y_Train = [x[1] for x in values] # dependent varaible
-		X_Train = [[x[0]] for x in values] # independent variable
-
-		model = SVR(kernel='linear', C=100, gamma='auto').fit(X_Train,
-					Y_Train)
-
-		sampling_duration = X_Train[1][0] - X_Train[0][0]
-		last_X_Train = X_Train[-1][0]
-
-		# Getting the times at which the next values are to be predicted
-		X_Pred = [[last_X_Train + x * sampling_duration] for x in range(law)]
-
-		predictions = model.predict(X_Pred)
-
-		return predictions
-
-	def gaussian_svr(self, values, law=1):
-		Y_Train = [x[1] for x in values] # dependent varaible
-		X_Train = [[x[0]] for x in values] # independent variable
-
-		model = SVR(kernel='rbf', C=1, gamma='auto', epsilon=.1).fit(X_Train,
-					Y_Train)
-
-		sampling_duration = X_Train[1][0] - X_Train[0][0]
-		last_X_Train = X_Train[-1][0]
-
-		# Getting the times at which the next values are to be predicted
-		X_Pred = [[last_X_Train + x * sampling_duration] for x in range(law)]
-
-		predictions = model.predict(X_Pred)
-		
-		return predictions
-
-	def simple_exponential_smoothing(self, values, law=1):
+	# Had implemented this initially 
+	# but this is not getting used in the final product.
+	# If you wish to incoprorate this as an algorithm just
+	# add it in accuracy calculation function.
+	def simple_exponential_smoothing(self, values, law=6):
+		"""
+		Simple Exponential Smoothing function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
 		Y_Train = [x[1] for x in values]
 		model = SimpleExpSmoothing(Y_Train).fit()
 		predictions = model.forecast(law)
 		return predictions
 
-	# double exponential smoothing
-	def holtWinters_des(self, values, law=1):
-		Y_Train = [x[1] for x in values]
-		model = ExponentialSmoothing(Y_Train, seasonal_periods=5, 
-			trend='add', seasonal='add').fit(use_boxcox=True)
-		predictions = model.forecast(law)
+	# Holt winters exponential smoothing
+	def holtWinters_des(self, values, law=6):
+		"""
+		HoltWinters function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
+		import warnings
+		warnings.filterwarnings('ignore')
+		Y_Train = []
+		for i in range(0, len(values), 6):
+			Y_Train.append(values[i][1])
+
+		model = ExponentialSmoothing(Y_Train, seasonal_periods=50, 
+			seasonal='add').fit(use_boxcox=True)
+		predictions = model.forecast(1)
 		return predictions
 
 	# weighted moving average
-	def wma(self, values, law=1):
+	def wma(self, values, law=6):
+		# Giving  weights to the last minute
+		values = values[-60:-1]
 		Y_Train = np.array([x[1] for x in values])
 		prediction = []
 
@@ -93,8 +107,12 @@ class Predictor:
 			Y_Train = np.append(Y_Train, [prediction])
 		
 		return prediction
-		
-	def linear_regression(self, values, law=1):
+	
+	# Had implemented this initially 
+	# but this is not getting used in the final product.
+	# If you wish to incoprorate this as an algorithm just
+	# add it in accuracy calculation function.	
+	def linear_regression(self, values, law=6):
 		Y_Train = [x[1] for x in values] # dependent varaible
 		X_Train = [x[0] for x in values] # independent variable
 
@@ -113,14 +131,14 @@ class Predictor:
 		predictions = model.predict(X_Pred)
 		return predictions
 
-	def accuracy(self, values, split_percent = 99):
+	def accuracy(self, values, split_percent = 95):
 		"""
 		Give the accuracy for a prediction algorithm
 		Arguments:
 			values: Tuple of X: Independent variable and
 							 Y: Dependent variable 
 		Returns:
-			Root Mean Squared Error for a prediction algorithm
+			Mean error percent for a prediction algorithm
 		"""	
 
 		model_error_list = []
@@ -137,95 +155,50 @@ class Predictor:
 		y_true = [x[1] for x in values_test]
 
 		try:
-			y_pred = self.gaussian_svr(values_train, len(values_test))
-			# Using rmse as it is sensitive to outliers. 
-			# Good rmse will depend on the range of values we are trying to predict
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('gaussian_svr RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'gaussian_svr') )
-		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for gaussian svr")
-
-		# try:
-		# 	y_pred = self.linear_svr(values_train, len(values_test))
-		# 	rmse = sqrt(mean_squared_error(y_true, y_pred))
-		# 	logging.debug('linear_svr RMSE: %f', rmse)
-		# 	model_error_list.append( (rmse, 'linear_svr') )
-		# except ValueError:
-		# 	logging.error("Exception ocurred, rmse could not be determined"
-		# 		"for linear_svr")
-
-		# try:
-		# 	y_pred = self.arima(values_train, len(values_test))
-		# 	rmse = sqrt(mean_squared_error(y_true, y_pred))
-		# 	logging.debug('arima RMSE: %f', rmse)
-		# 	model_error_list.append( (rmse, 'arima') )
-		# except ValueError:
-		# 	logging.error("Exception ocurred, rmse could not be determined"
-		# 		"for arima")
-
-
-		try:
-			y_pred = self.linear_regression(values_train, len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('linear regression RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'linear_regression') )
-
-		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for linear regression")
-
-		try:
-			y_pred = self. simple_exponential_smoothing(values_train, 
-						len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('simple exponential smoothing RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'simple_exponential_smoothing') )
-
-		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for simple_exponential_smoothing")
-
+			y_pred = self.arima(values_train, len(values_test))
+			err = mean_absolute_percentage_error(y_true, y_pred)
+			logging.debug('arima error percent: %f', err)
+			model_error_list.append( (err, 'arima') )
+		except:
+			logging.error("Exception ocurred, error percent could not be determined"
+				" for arima")
 
 		try:
 			y_pred = self.holtWinters_des(values_train, len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('holt des RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'holtWinters_des') )
-		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for holtWinters_des")
+			err = mean_absolute_percentage_error(y_true, y_pred)
+			logging.debug('Holt Winters ES error percent: %f', err)
+			model_error_list.append( (err, 'holtWinters_des') )
+		except:
+			logging.error("Exception ocurred, error percent could not be" 
+				" determined for holtWinters_des")
 
 
 		try:
 			y_pred = self.wma(values_train, len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('wma RMSE: %f', rmse)
-			model_error_list.append( (rmse, 'wma') )
+			err = mean_absolute_percentage_error(y_true, y_pred)
+			logging.debug('wma error percent: %f', err)	
+			model_error_list.append( (err, 'wma') )
 		except ValueError:
-			logging.error("Exception ocurred, rmse could not be determined"
-				"for wma")
+			logging.error("Exception ocurred, error percent could not be" 
+				" determined for wma")
 
 		return model_error_list
 
-	def get_prediction(self, values, model, lookahead_window=1):
-		Y_Train = [x[1] for x in values]
+	def get_prediction(self, values, model, lookahead_window=6):
+		from AsyncLoadBalance import AsyncLoadBalance
+		prediction = []
+		precomputeBestModel = AsyncLoadBalance.getInstance()
 
-		# from AsyncLoadBalance import AsyncLoadBalance
-		# prediction = []
-		# precomputeBestModel = AsyncLoadBalance.getInstance()
+		bestModel = precomputeBestModel.getBestModel(model)
+		print("bestModel is ", bestModel)
+		logging.debug("Using bestModel %s", bestModel)
+		predictionAlgo = getattr(self, bestModel)
 
-		# bestModel = precomputeBestModel.getBestModel(model)
-		# print("bestModel is ", bestModel)
-		# logging.debug("Using bestModel %s", bestModel)
-		# predictionAlgo = getattr(self, bestModel)
-
-		# try:
-		# 	prediction = predictionAlgo(values, lookahead_window)
-
-		# except ValueError:
-		# 	logging.error("Exception ocurred so falling back to wma")
-			# prediction = self.wma(values)
-
-		return Y_Train
+		try:
+			prediction = predictionAlgo(values, lookahead_window)
+		except:
+			logging.error("Exception ocurred so falling back to wma")
+			prediction = self.wma(values)
+		# Initiate best model computation
+		precomputeBestModel.populateBestModel()
+		return prediction

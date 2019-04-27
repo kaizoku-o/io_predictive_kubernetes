@@ -28,8 +28,8 @@ class PrometheusDataHandler(BaseDataHandler):
 			"mem" : "mem_utilization_perc_100",
 			"io" : "disk_io_utilization"
 		}
-
-		result = run_query_range(Queries[query_map[self.mode_]], start_time, end_time, 60)
+		
+		result = run_query_range(Queries[query_map[self.mode_]], start_time, end_time, 10)
 		hosts = {x[0] for x in result}
 		response = {}
 

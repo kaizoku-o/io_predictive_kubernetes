@@ -31,6 +31,11 @@ Queries = {
 
     "disk_io_explicit" : "node_disk_io_now{device='xvda',job='k8s-nodes'}",
 
+    # Obtain the disk io utilization. This query was confirmed from grafana
+
+    "io_util" : "100 * (rate(node_disk_io_time_ms{device='xvda', job='k8s-nodes'}[5m])/1000 or irate(node_disk_io_time_ms{device='xvda', job='k8s-nodes'}[5m])/1000)",
+
+
     # Obtain the rate of major page faults in the node. Major page faults
     # cause IO when loading the pages from disk. This is an Implicit I/O
 
