@@ -31,4 +31,4 @@ This folder containers the source code and build environment of the Tetris sched
     1. Contains tetris source code
 
 2. cfg
-    2. Contains admin configuration file that tetris needs in order to communicate with the cluster
+    1. Contains admin configuration file that tetris needs in order to communicate with the cluster
