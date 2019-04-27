@@ -1,27 +1,46 @@
 #!/usr/bin/env python3
+
 from kubernetes import client,config,watch
 from os import environ as ENV
 from helper.PrometheusNodeSelector import PrometheusNodeSelector as pns
 from kubernetes.client.rest import ApiException
 from helper.GenericStatsCollector import GenericStatsCollector
-from helper.SchedulerDeclators import backoff
+from helper.SchedulerDecorator import backoff
 import helper.logit as logit
+
+__author__ = "Kyle Martin (kdmarti2)"
+
 
 logging = logit.get_logger()
 ##
 #Globals
 ##
 
+##
+#Set by the environment
+#Tetris Scheduler Lookup String
+##
 scheduler_cpu = None
 scheduler_mem = None
 scheduler_io = None
 
+##
+#Set By The Environment
+#Determine which Namespace that tetris looks at for pending pods
+##
 namespace = None
 
+##
+#PrometheusNodeSelector Object Class that handles the contacting of Prometheus
+#and seleting which node has the lowest predicted workload
+##
 cpu_model = None
 mem_model = None
 IO_model = None
 
+##
+#Object Class to interact with Kubernetes
+##
 v1_api = None
 
 ##
@@ -30,9 +49,14 @@ v1_api = None
 
 
 ##
-#Need To get the IP addresses
+#@Ret String get_nodes(p object)
+#This function will first query for all available and ready nodes in the K8s cluster
+#Determine the internal IP address of these nodes and associate this internal IP address
+#to the DNS name that K8s will use.  When need this association because Prometheous uses
+#IPaddress to identify seperate nodes not DNS names like how K8s does it.  This allows
+#me to have K8s and prometheous talk the same language.  Once this dictionary is filled
+#call node_selection to select a node to place a container on.
 ##
-
 def get_nodes(p):
     logging.info("Getting Nodes")
 
@@ -51,10 +75,8 @@ def get_nodes(p):
     return p.node_selection(ready_nodes)
 
 ##
-#Might need Error handling by leveraging an error queue
-#We need to use a decorator
+#@backoff - See SchedulerDecl
 ##
-
 @backoff
 def scheduler(name,model,ns):
 
