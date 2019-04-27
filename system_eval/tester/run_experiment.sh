@@ -1,4 +1,11 @@
-#!/bin/bash +x
+#!/bin/bash
+#title           : run_experiment.sh
+#description     : This script will run the experiment for different scenarios.
+#author		     : Vasudev Bongale
+#date            : 2019-04-27
+#version         : 1.0    
+#usage		     : ./run_experiment.sh <exp#> <numstressors> <scheduler>
+
 
 stressormode=$2
 experimentnum=$1
