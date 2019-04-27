@@ -3,6 +3,8 @@ from prometheusQueries import Queries
 from prometheusUtils import run_query_range
 import time
 
+__author__ = "Sohail Shaikh, Vasudev Bongale"
+
 class PrometheusDataHandler(BaseDataHandler):
 	def __init__(self, mode):
 		self.mode_ = mode
@@ -24,7 +26,7 @@ class PrometheusDataHandler(BaseDataHandler):
 		query_map = {
 			"cpu" : "cpu",
 			"mem" : "mem_utilization_perc_100",
-			"io" : "io_util"
+			"io" : "disk_io_utilization"
 		}
 		
 		result = run_query_range(Queries[query_map[self.mode_]], start_time, end_time, 10)

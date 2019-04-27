@@ -1,5 +1,12 @@
+"""
+Provides utility functions to query prometheus API to get metric data
+"""
+
+__author__ = 'Vasudev Bongale"
+
 import requests
 import json
+
 
 QUERY_URL = 'http://localhost:9090/api/v1/query'
 QUERY_RANGE_URL = 'http://localhost:9090/api/v1/query_range'

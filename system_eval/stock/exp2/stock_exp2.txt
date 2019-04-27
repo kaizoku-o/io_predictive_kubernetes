@@ -1,0 +1,350 @@
+Begin Experiment 2 with 1 stressors with scheduler stock
+Cleaning up system..
+Deleting existing io-stressor.yaml Stressors
+deployment.apps "io-stressor" deleted
+service "mysql" deleted
+deployment.apps "mysql" deleted
+Waiting for cleanup
+Deploying 1 stressors
+deployment.apps/io-stressor created
+scaling stressors
+deployment.extensions/io-stressor scaled
+NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE      NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-dp9vz   1/1     Running   0          30s   10.244.1.251   k8node1   <none>           <none>
+Deploying mysql_database.yml
+service/mysql created
+deployment.apps/mysql created
+NAME                          READY   STATUS              RESTARTS   AGE   IP             NODE      NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-dp9vz   1/1     Running             0          30s   10.244.1.251   k8node1   <none>           <none>
+mysql-65b897d688-pz9dx        0/1     ContainerCreating   0          0s    <none>         k8node1   <none>           <none>
+SSH into prometheus and begin test
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.15.0-1035-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sat Apr 27 15:46:27 UTC 2019
+
+  System load:  0.09               Processes:              110
+  Usage of /:   38.6% of 29.02GB   Users logged in:        1
+  Memory usage: 56%                IP address for eth0:    172.31.7.88
+  Swap usage:   0%                 IP address for docker0: 172.17.0.1
+
+ * Ubuntu's Kubernetes 1.14 distributions can bypass Docker and use containerd
+   directly, see https://bit.ly/ubuntu-containerd or try it now with
+
+     snap install microk8s --classic
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+132 packages can be updated.
+0 updates are security updates.
+
+
+Makefile
+stock_2_1.out
+Begin Experiment 2 with 1 stressors with scheduler stock
+Cleaning up system..
+Deleting existing io-stressor.yaml Stressors
+deployment.apps "io-stressor" deleted
+service "mysql" deleted
+deployment.apps "mysql" deleted
+Waiting for cleanup
+Deploying 1 stressors
+deployment.apps/io-stressor created
+scaling stressors
+deployment.extensions/io-stressor scaled
+NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE      NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-w849v   1/1     Running   0          30s   10.244.1.253   k8node1   <none>           <none>
+Deploying mysql_database.yml
+service/mysql created
+deployment.apps/mysql created
+NAME                          READY   STATUS              RESTARTS   AGE   IP             NODE      NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-w849v   1/1     Running             0          30s   10.244.1.253   k8node1   <none>           <none>
+mysql-65b897d688-qk6q5        0/1     ContainerCreating   0          0s    <none>         k8node1   <none>           <none>
+SSH into prometheus and begin test
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.15.0-1035-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sat Apr 27 15:53:56 UTC 2019
+
+  System load:  0.27               Processes:              117
+  Usage of /:   38.6% of 29.02GB   Users logged in:        1
+  Memory usage: 60%                IP address for eth0:    172.31.7.88
+  Swap usage:   0%                 IP address for docker0: 172.17.0.1
+
+ * Ubuntu's Kubernetes 1.14 distributions can bypass Docker and use containerd
+   directly, see https://bit.ly/ubuntu-containerd or try it now with
+
+     snap install microk8s --classic
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+132 packages can be updated.
+0 updates are security updates.
+
+
+Makefile
+stock_2_1.json
+stock_2_1.out
+Begin Experiment 2 with 4 stressors with scheduler stock
+Cleaning up system..
+Deleting existing io-stressor.yaml Stressors
+deployment.apps "io-stressor" deleted
+service "mysql" deleted
+deployment.apps "mysql" deleted
+Waiting for cleanup
+Deploying 4 stressors
+deployment.apps/io-stressor created
+scaling stressors
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+NAME                          READY   STATUS    RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-2pjh8   1/1     Running   0          90s    10.244.0.52   k8master   <none>           <none>
+io-stressor-cc675ffd6-bwz6x   1/1     Running   0          2m1s   10.244.1.2    k8node1    <none>           <none>
+io-stressor-cc675ffd6-m8pbw   1/1     Running   0          30s    10.244.0.53   k8master   <none>           <none>
+io-stressor-cc675ffd6-r56wf   1/1     Running   0          60s    10.244.1.3    k8node1    <none>           <none>
+Deploying mysql_database.yml
+service/mysql created
+deployment.apps/mysql created
+NAME                          READY   STATUS              RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-2pjh8   1/1     Running             0          90s    10.244.0.52   k8master   <none>           <none>
+io-stressor-cc675ffd6-bwz6x   1/1     Running             0          2m1s   10.244.1.2    k8node1    <none>           <none>
+io-stressor-cc675ffd6-m8pbw   1/1     Running             0          30s    10.244.0.53   k8master   <none>           <none>
+io-stressor-cc675ffd6-r56wf   1/1     Running             0          60s    10.244.1.3    k8node1    <none>           <none>
+mysql-65b897d688-4ntds        0/1     ContainerCreating   0          0s     <none>        k8node1    <none>           <none>
+SSH into prometheus and begin test
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.15.0-1035-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sat Apr 27 16:01:27 UTC 2019
+
+  System load:  0.12               Processes:              120
+  Usage of /:   38.6% of 29.02GB   Users logged in:        1
+  Memory usage: 59%                IP address for eth0:    172.31.7.88
+  Swap usage:   0%                 IP address for docker0: 172.17.0.1
+
+  => There is 1 zombie process.
+
+ * Ubuntu's Kubernetes 1.14 distributions can bypass Docker and use containerd
+   directly, see https://bit.ly/ubuntu-containerd or try it now with
+
+     snap install microk8s --classic
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+132 packages can be updated.
+0 updates are security updates.
+
+
+Makefile
+stock_2_1.json
+stock_2_1.out
+stock_2_4.json
+stock_2_4.out
+Begin Experiment 2 with 8 stressors with scheduler stock
+Cleaning up system..
+Deleting existing io-stressor.yaml Stressors
+deployment.apps "io-stressor" deleted
+service "mysql" deleted
+deployment.apps "mysql" deleted
+Waiting for cleanup
+Deploying 8 stressors
+deployment.apps/io-stressor created
+scaling stressors
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+NAME                          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-289pj   1/1     Running   0          3m31s   10.244.0.54   k8master   <none>           <none>
+io-stressor-cc675ffd6-4nsc5   1/1     Running   0          30s     10.244.1.9    k8node1    <none>           <none>
+io-stressor-cc675ffd6-4vth7   1/1     Running   0          61s     10.244.0.56   k8master   <none>           <none>
+io-stressor-cc675ffd6-87f7z   1/1     Running   0          2m1s    10.244.1.7    k8node1    <none>           <none>
+io-stressor-cc675ffd6-8pcgl   1/1     Running   0          4m1s    10.244.1.5    k8node1    <none>           <none>
+io-stressor-cc675ffd6-9246b   1/1     Running   0          91s     10.244.1.8    k8node1    <none>           <none>
+io-stressor-cc675ffd6-jckvk   1/1     Running   0          2m31s   10.244.0.55   k8master   <none>           <none>
+io-stressor-cc675ffd6-ql7wp   1/1     Running   0          3m1s    10.244.1.6    k8node1    <none>           <none>
+Deploying mysql_database.yml
+service/mysql created
+deployment.apps/mysql created
+NAME                          READY   STATUS              RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-289pj   1/1     Running             0          3m31s   10.244.0.54   k8master   <none>           <none>
+io-stressor-cc675ffd6-4nsc5   1/1     Running             0          30s     10.244.1.9    k8node1    <none>           <none>
+io-stressor-cc675ffd6-4vth7   1/1     Running             0          61s     10.244.0.56   k8master   <none>           <none>
+io-stressor-cc675ffd6-87f7z   1/1     Running             0          2m1s    10.244.1.7    k8node1    <none>           <none>
+io-stressor-cc675ffd6-8pcgl   1/1     Running             0          4m1s    10.244.1.5    k8node1    <none>           <none>
+io-stressor-cc675ffd6-9246b   1/1     Running             0          91s     10.244.1.8    k8node1    <none>           <none>
+io-stressor-cc675ffd6-jckvk   1/1     Running             0          2m31s   10.244.0.55   k8master   <none>           <none>
+io-stressor-cc675ffd6-ql7wp   1/1     Running             0          3m1s    10.244.1.6    k8node1    <none>           <none>
+mysql-65b897d688-pmxff        0/1     ContainerCreating   0          0s      <none>        k8node1    <none>           <none>
+SSH into prometheus and begin test
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.15.0-1035-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sat Apr 27 16:11:01 UTC 2019
+
+  System load:  0.25               Processes:              117
+  Usage of /:   38.6% of 29.02GB   Users logged in:        1
+  Memory usage: 57%                IP address for eth0:    172.31.7.88
+  Swap usage:   0%                 IP address for docker0: 172.17.0.1
+
+  => There is 1 zombie process.
+
+ * Ubuntu's Kubernetes 1.14 distributions can bypass Docker and use containerd
+   directly, see https://bit.ly/ubuntu-containerd or try it now with
+
+     snap install microk8s --classic
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+132 packages can be updated.
+0 updates are security updates.
+
+
+Makefile
+stock_2_1.json
+stock_2_1.out
+stock_2_4.json
+stock_2_4.out
+stock_2_8.json
+stock_2_8.out
+Begin Experiment 2 with 16 stressors with scheduler stock
+Cleaning up system..
+Deleting existing io-stressor.yaml Stressors
+deployment.apps "io-stressor" deleted
+service "mysql" deleted
+deployment.apps "mysql" deleted
+Waiting for cleanup
+Deploying 16 stressors
+deployment.apps/io-stressor created
+scaling stressors
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+deployment.extensions/io-stressor scaled
+NAME                          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-26gkt   1/1     Running   0          4m1s    10.244.0.60   k8master   <none>           <none>
+io-stressor-cc675ffd6-4svpw   1/1     Running   0          7m1s    10.244.1.12   k8node1    <none>           <none>
+io-stressor-cc675ffd6-4vn5n   1/1     Running   0          6m1s    10.244.1.13   k8node1    <none>           <none>
+io-stressor-cc675ffd6-cr4rz   1/1     Running   0          5m1s    10.244.1.14   k8node1    <none>           <none>
+io-stressor-cc675ffd6-dgfqx   1/1     Running   0          8m2s    10.244.1.11   k8node1    <none>           <none>
+io-stressor-cc675ffd6-dn7hf   1/1     Running   0          30s     10.244.0.63   k8master   <none>           <none>
+io-stressor-cc675ffd6-fr2k5   1/1     Running   0          5m31s   10.244.0.59   k8master   <none>           <none>
+io-stressor-cc675ffd6-j6qcr   1/1     Running   0          6m31s   10.244.0.58   k8master   <none>           <none>
+io-stressor-cc675ffd6-k782n   1/1     Running   0          3m1s    10.244.0.61   k8master   <none>           <none>
+io-stressor-cc675ffd6-khzhl   1/1     Running   0          2m1s    10.244.1.18   k8node1    <none>           <none>
+io-stressor-cc675ffd6-pdh7n   1/1     Running   0          60s     10.244.1.19   k8node1    <none>           <none>
+io-stressor-cc675ffd6-qn4m9   1/1     Running   0          2m31s   10.244.1.17   k8node1    <none>           <none>
+io-stressor-cc675ffd6-r72fz   1/1     Running   0          3m31s   10.244.1.16   k8node1    <none>           <none>
+io-stressor-cc675ffd6-vcxg6   1/1     Running   0          7m31s   10.244.0.57   k8master   <none>           <none>
+io-stressor-cc675ffd6-vjtdf   1/1     Running   0          4m31s   10.244.1.15   k8node1    <none>           <none>
+io-stressor-cc675ffd6-vxxtz   1/1     Running   0          90s     10.244.0.62   k8master   <none>           <none>
+Deploying mysql_database.yml
+service/mysql created
+deployment.apps/mysql created
+NAME                          READY   STATUS              RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+io-stressor-cc675ffd6-26gkt   1/1     Running             0          4m1s    10.244.0.60   k8master   <none>           <none>
+io-stressor-cc675ffd6-4svpw   1/1     Running             0          7m1s    10.244.1.12   k8node1    <none>           <none>
+io-stressor-cc675ffd6-4vn5n   1/1     Running             0          6m1s    10.244.1.13   k8node1    <none>           <none>
+io-stressor-cc675ffd6-cr4rz   1/1     Running             0          5m1s    10.244.1.14   k8node1    <none>           <none>
+io-stressor-cc675ffd6-dgfqx   1/1     Running             0          8m2s    10.244.1.11   k8node1    <none>           <none>
+io-stressor-cc675ffd6-dn7hf   1/1     Running             0          30s     10.244.0.63   k8master   <none>           <none>
+io-stressor-cc675ffd6-fr2k5   1/1     Running             0          5m31s   10.244.0.59   k8master   <none>           <none>
+io-stressor-cc675ffd6-j6qcr   1/1     Running             0          6m31s   10.244.0.58   k8master   <none>           <none>
+io-stressor-cc675ffd6-k782n   1/1     Running             0          3m1s    10.244.0.61   k8master   <none>           <none>
+io-stressor-cc675ffd6-khzhl   1/1     Running             0          2m1s    10.244.1.18   k8node1    <none>           <none>
+io-stressor-cc675ffd6-pdh7n   1/1     Running             0          60s     10.244.1.19   k8node1    <none>           <none>
+io-stressor-cc675ffd6-qn4m9   1/1     Running             0          2m31s   10.244.1.17   k8node1    <none>           <none>
+io-stressor-cc675ffd6-r72fz   1/1     Running             0          3m31s   10.244.1.16   k8node1    <none>           <none>
+io-stressor-cc675ffd6-vcxg6   1/1     Running             0          7m31s   10.244.0.57   k8master   <none>           <none>
+io-stressor-cc675ffd6-vjtdf   1/1     Running             0          4m31s   10.244.1.15   k8node1    <none>           <none>
+io-stressor-cc675ffd6-vxxtz   1/1     Running             0          90s     10.244.0.62   k8master   <none>           <none>
+mysql-65b897d688-d5gwz        0/1     ContainerCreating   0          0s      <none>        k8node1    <none>           <none>
+SSH into prometheus and begin test
+Welcome to Ubuntu 18.04.1 LTS (GNU/Linux 4.15.0-1035-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Sat Apr 27 16:24:41 UTC 2019
+
+  System load:  0.03               Processes:              117
+  Usage of /:   38.7% of 29.02GB   Users logged in:        1
+  Memory usage: 60%                IP address for eth0:    172.31.7.88
+  Swap usage:   0%                 IP address for docker0: 172.17.0.1
+
+ * Ubuntu's Kubernetes 1.14 distributions can bypass Docker and use containerd
+   directly, see https://bit.ly/ubuntu-containerd or try it now with
+
+     snap install microk8s --classic
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+132 packages can be updated.
+0 updates are security updates.
+
+
+Makefile
+stock_2_1.json
+stock_2_1.out
+stock_2_16.json
+stock_2_16.out
+stock_2_4.json
+stock_2_4.out
+stock_2_8.json
+stock_2_8.out

@@ -58,5 +58,8 @@ Queries = {
 
     # Same as memutilization query but gets the value in percentage of 100
 
-    "mem_utilization_perc_100" : "100 * (1 - (node_memory_MemAvailable{job='k8s-nodes'}/node_memory_MemTotal{job='k8s-nodes'}))"
+    "mem_utilization_perc_100" : "100 * (1 - (node_memory_MemAvailable{job='k8s-nodes'}/node_memory_MemTotal{job='k8s-nodes'}))",
+
+    # Determines Disk I/O percentage. disk i/o usage is recorded in milliseconds the time spent by the disk in performing operation. 
+    "disk_io_utilization": "100 * (rate(node_disk_io_time_ms{device='xvda', job='k8s-nodes'}[5m])/1000 or irate(node_disk_io_time_ms{device='xvda', job='k8s-nodes'}[5m])/1000)"
 }
