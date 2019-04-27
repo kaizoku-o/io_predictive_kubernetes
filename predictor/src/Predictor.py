@@ -16,15 +16,31 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 class Predictor:
+	# model_list_ if you want to save the models
 	model_list_ = []
 
 	def __init__(self):
 		pass
 	
-	# problems with this
 	def arima(self, values, law=6):
+		"""
+		ARIMA function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
 		import warnings
 		warnings.filterwarnings('ignore')
+
+		# p, d, q values have been determined through offline analysis
+		# of a dataset that we generated using stress-ng stressors.
+		# We settled on these values through a grid search 
+		# (p, d, q) => (0-10, 0-5, 0-5) and using of the lower aic values.
+		# To get good accuracy this must be manually retuned.
+
 		p = 5 # lag observations
 		d = 0 # degree of differencing
 		q = 3 # order/size of moving average
@@ -37,27 +53,51 @@ class Predictor:
 		predictions.append(model_fit.forecast(steps=law)[0])
 		return 	predictions[-1]
 
+	# Had implemented this initially 
+	# but this is not getting used in the final product.
+	# If you wish to incoprorate this as an algorithm just
+	# add it in accuracy calculation function.
 	def simple_exponential_smoothing(self, values, law=6):
+		"""
+		Simple Exponential Smoothing function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
 		Y_Train = [x[1] for x in values]
 		model = SimpleExpSmoothing(Y_Train).fit()
 		predictions = model.forecast(law)
 		return predictions
 
-	# double exponential smoothing
-	def holtWinters_des(self, values, law=1):
+	# Holt winters exponential smoothing
+	def holtWinters_des(self, values, law=6):
+		"""
+		HoltWinters function implementation
+		Arguments:
+			values: Tuple of X: Independent variable and
+							 Y: Dependent variable 
+		Returns:
+			Predictions for law values in the future. 
+			Default: Predict 6 points in the future.
+		"""	
 		import warnings
 		warnings.filterwarnings('ignore')
 		Y_Train = []
 		for i in range(0, len(values), 6):
-			Y_Train.append(values[1])
+			Y_Train.append(values[i][1])
 
 		model = ExponentialSmoothing(Y_Train, seasonal_periods=50, 
 			seasonal='add').fit(use_boxcox=True)
-		predictions = model.forecast(law)
+		predictions = model.forecast(1)
 		return predictions
 
 	# weighted moving average
 	def wma(self, values, law=6):
+		# Giving  weights to the last minute
+		values = values[-60:-1]
 		Y_Train = np.array([x[1] for x in values])
 		prediction = []
 
@@ -67,7 +107,11 @@ class Predictor:
 			Y_Train = np.append(Y_Train, [prediction])
 		
 		return prediction
-		
+	
+	# Had implemented this initially 
+	# but this is not getting used in the final product.
+	# If you wish to incoprorate this as an algorithm just
+	# add it in accuracy calculation function.	
 	def linear_regression(self, values, law=6):
 		Y_Train = [x[1] for x in values] # dependent varaible
 		X_Train = [x[0] for x in values] # independent variable
@@ -87,14 +131,14 @@ class Predictor:
 		predictions = model.predict(X_Pred)
 		return predictions
 
-	def accuracy(self, values, split_percent = 90):
+	def accuracy(self, values, split_percent = 95):
 		"""
 		Give the accuracy for a prediction algorithm
 		Arguments:
 			values: Tuple of X: Independent variable and
 							 Y: Dependent variable 
 		Returns:
-			Root Mean Squared Error for a prediction algorithm
+			Mean error percent for a prediction algorithm
 		"""	
 
 		model_error_list = []
@@ -112,7 +156,6 @@ class Predictor:
 
 		try:
 			y_pred = self.arima(values_train, len(values_test))
-			# rmse = sqrt(mean_squared_error(y_true, y_pred))
 			err = mean_absolute_percentage_error(y_true, y_pred)
 			logging.debug('arima error percent: %f', err)
 			model_error_list.append( (err, 'arima') )
@@ -121,32 +164,7 @@ class Predictor:
 				" for arima")
 
 		try:
-			y_pred = self.linear_regression(values_train, len(values_test))
-			# rmse = sqrt(mean_squared_error(y_true, y_pred))
-			err = mean_absolute_percentage_error(y_true, y_pred)
-			logging.debug('linear regression error percent: %f', err)
-			model_error_list.append( (err, 'linear_regression') )
-
-		except:
-			logging.error("Exception ocurred, error percent could not be" 
-				" determined for linear regression")
-
-		try:
-			y_pred = self. simple_exponential_smoothing(values_train, 
-						len(values_test))
-			# rmse = sqrt(mean_squared_error(y_true, y_pred))
-			err = mean_absolute_percentage_error(y_true, y_pred)
-			logging.debug('simple exponential smoothing error percent: %f', err)
-			model_error_list.append( (err, 'simple_exponential_smoothing') )
-
-		except:
-			logging.error("Exception ocurred, error percent could not be"
-				" determined for simple_exponential_smoothing")
-
-
-		try:
 			y_pred = self.holtWinters_des(values_train, len(values_test))
-			# rmse = sqrt(mean_squared_error(y_true, y_pred))
 			err = mean_absolute_percentage_error(y_true, y_pred)
 			logging.debug('Holt Winters ES error percent: %f', err)
 			model_error_list.append( (err, 'holtWinters_des') )
@@ -157,9 +175,8 @@ class Predictor:
 
 		try:
 			y_pred = self.wma(values_train, len(values_test))
-			rmse = sqrt(mean_squared_error(y_true, y_pred))
-			logging.debug('wma error percent: %f', err)
 			err = mean_absolute_percentage_error(y_true, y_pred)
+			logging.debug('wma error percent: %f', err)	
 			model_error_list.append( (err, 'wma') )
 		except ValueError:
 			logging.error("Exception ocurred, error percent could not be" 
@@ -182,5 +199,6 @@ class Predictor:
 		except:
 			logging.error("Exception ocurred so falling back to wma")
 			prediction = self.wma(values)
-
+		# Initiate best model computation
+		precomputeBestModel.populateBestModel()
 		return prediction
