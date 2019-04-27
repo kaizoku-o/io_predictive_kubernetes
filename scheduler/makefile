@@ -7,8 +7,6 @@ build:
 
 deploy:
 	-kubectl create -f ./tetris.yml
-	-kubectl create -f ./cpu-test.yaml
 
 clean:
 	-kubectl delete -f ./tetris.yml
-	-kubectl delete -f ./cpu-test.yaml
