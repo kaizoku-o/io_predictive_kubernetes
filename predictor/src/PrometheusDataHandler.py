@@ -3,6 +3,8 @@ from prometheusQueries import Queries
 from prometheusUtils import run_query_range
 import time
 
+__author__ = "Sohail Shaikh, Vasudev Bongale"
+
 class PrometheusDataHandler(BaseDataHandler):
 	def __init__(self, mode):
 		self.mode_ = mode
