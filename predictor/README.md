@@ -3,9 +3,9 @@
 #### Algorithms
 * ARIMA
 * Holt Winters
-* Linear Regression
+* Linear Regression (Implemented but not being used)
 * Weighted Moving Average
-* Exponential Smoothing
+* Exponential Smoothing (Implemented but not being used)
 
 ### Functions
 
