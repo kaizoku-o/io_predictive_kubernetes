@@ -4,6 +4,10 @@ from PrometheusDataHandler import PrometheusDataHandler
 from FileHandler import FileHandler
 from Predictor import Predictor
 
+__author__ = "Sohail Shaikh"
+__maintainer__ = "Sohail Shaikh"
+__status__ = "Development"
+
 class RequestResponseHandler:
 	def __init__(self, apiName):
 		self.data_ = {}

@@ -4,6 +4,10 @@
    of the node. 
 """
 
+__author__ = "Vasudev Bongale"
+__maintainer__ = "Vasudev Bongale"
+__status__ = "Development"
+
 Queries = {
     # Obtain the memory usage value of a node (in GB) using average of free memory
     #  (Free + cached + Buffer) over the past 24 hours. Multiply the value by 100 

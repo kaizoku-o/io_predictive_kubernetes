@@ -1,6 +1,10 @@
 import requests
 import json
 
+__author__ = "Vasudev Bongale"
+__maintainer__ = "Vasudev Bongale"
+__status__ = "Development"
+
 def run_query(prom_query):
     """
     Get the response of a simple query from prometheus

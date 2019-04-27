@@ -1,6 +1,10 @@
 from pandas import read_csv
 from BaseDataHandler import BaseDataHandler
 
+__author__ = "Sohail Shaikh"
+__maintainer__ = "Sohail Shaikh"
+__status__ = "Development"
+
 class FileHandler(BaseDataHandler):
 	fileName_ = ""
 

@@ -4,6 +4,8 @@ from prometheusUtils import run_query_range
 import time
 
 __author__ = "Sohail Shaikh, Vasudev Bongale"
+__maintainer__ = "Sohail Shaikh"
+__status__ = "Development"
 
 class PrometheusDataHandler(BaseDataHandler):
 	def __init__(self, mode):

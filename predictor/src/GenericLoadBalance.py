@@ -1,3 +1,6 @@
+__author__ = "Kyle Martin"
+__maintainer__ = "Kyle Martin"
+__status__ = "Development"
 
 class GenericLoadBalance(object):
 

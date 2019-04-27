@@ -1,3 +1,7 @@
+__author__ = "Sohail Shaikh"
+__maintainer__ = "Sohail Shaikh"
+__status__ = "Development"
+
 class RequestParser:
 	handlers_ = []
 	def __init__(self):
