@@ -61,6 +61,9 @@ def get_nodes(p):
     logging.info("Getting Nodes")
 
     ready_nodes = {}
+    ##
+    #Step 2 - Getting a list of ready nodes
+    ##
     for k8_node in v1_api.list_node().items:
         for status in k8_node.status.conditions:
             if status.status == "True" and status.type == "Ready":
@@ -75,20 +78,25 @@ def get_nodes(p):
     return p.node_selection(ready_nodes)
 
 ##
-#@backoff - See SchedulerDecl
+#@backoff - See SchedulerDecorator.py
+#This is to prevent wasted time and effort on scheduling a pod that has already been scheduled
+#Also used to handle weird Error handing case
+#
+#Scheduler(string,Object,String)
+#@name - name represents the name of the pod to provision onto a node
+#@model - which node selector to use to determine the node with least predicitive workload
+#@ns - namespace that the pod to be provisioned is in
 ##
 @backoff
 def scheduler(name,model,ns):
 
+    ##
+    #Step 3 - Selecting a node
+    ##
     node = get_nodes(model)
-
     logging.info("Putting {0} on {1} in namespace: {2}".format(name,node,ns))
     
-    ##
-    #Source: https://sysdig.com/blog/kubernetes-scheduler/
-    ##
-
-    ##
+    #
     #https://github.com/kubernetes-client/python/issues/547
     #https://github.com/kubernetes-client/python/issues/547#issuecomment-455362558
     ##
@@ -103,11 +111,15 @@ def scheduler(name,model,ns):
     body = client.V1Binding(target=target,metadata=meta)
 
     ##
-    #Its likely going to error due to a bug we can try catch it and ignore it
+    #Step 4 - Bind the pod to a node
+    #Finished
     ##
     return v1_api.create_namespaced_binding(namespace=ns,body=body)
 
-
+##
+#@init - function sets the globals and retrieves configuration environmen variables
+#at startup.
+##
 def init():
     ##
     #Globals
@@ -155,8 +167,12 @@ def init():
     config.load_kube_config()
     v1_api = client.CoreV1Api()
 
-
-
+##
+#@main - Function runs Forever to find new pods to provision on availale K8s Nodes
+##
+#Citation: https://sysdig.com/blog/kubernetes-scheduler/
+#The following link was usd great guide to extract the four steps in making a Kubernetes scheduler.
+##
 def main():
     init();
 
@@ -164,6 +180,14 @@ def main():
     logging.info("Starting to Schedular pods for Tetris in namespace: {0}".format(namespace))
     w = watch.Watch()
 
+    ##
+    #Step 1 - Find a pod in a pending state
+    #
+    #Only provision pods that wants to use our scheduler
+    #tetris-scheduler-cpu
+    #tetris-scheduler-io
+    #tetris-scheduler-mem
+    ##
     while True:
         for event in w.stream(v1_api.list_namespaced_pod,namespace):
             logging.info("Event Triggered. Phase: {0} scheduler_name: {1}".format(event['object'].status.phase,event['object'].spec.scheduler_name))
