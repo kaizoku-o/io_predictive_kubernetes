@@ -15,6 +15,7 @@ RUN pip3 install statsmodels
 RUN pip3 install sklearn
 RUN pip3 install flask
 RUN pip3 install requests
+RUN pip3 install timeout-decorator
 
 ADD src /usr/bin/src/
 

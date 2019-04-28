@@ -6,6 +6,8 @@ from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 import logging
+import time
+import timeout_decorator
 
 __author__ = "Sohail Shaikh"
 __maintainer__ = "Sohail Shaikh"
@@ -26,6 +28,7 @@ class Predictor:
 	def __init__(self):
 		pass
 	
+	@timeout_decorator.timeout(16, use_signals=False, timeout_exception=Exception)
 	def arima(self, values, law=6):
 		"""
 		ARIMA function implementation
@@ -77,6 +80,7 @@ class Predictor:
 		return predictions
 
 	# Holt winters exponential smoothing
+	@timeout_decorator.timeout(16, use_signals=False, timeout_exception=Exception)
 	def holtWinters_des(self, values, law=6):
 		"""
 		HoltWinters function implementation
