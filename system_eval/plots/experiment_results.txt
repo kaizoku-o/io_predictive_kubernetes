@@ -1,4 +1,4 @@
-
+# SLO
 # Tetris IO
 {'stress': '1', 'mean_slo': 0.01976, 'sd_slo': 0.00627757915123338}
 {'stress': '4', 'mean_slo': 0.03152, 'sd_slo': 0.006810433172713759}
@@ -18,11 +18,71 @@
 {'stress': '4', 'mean_slo': 28.227999999999998, 'sd_slo': 17.548993418427166}
 {'stress': '8', 'mean_slo': 60.85, 'sd_slo': 9.382318476794532}
 
-# STOCK Memory# 
+# STOCK Memory
 {'stress': '1', 'mean_slo': 14.209999999999999, 'sd_slo': 9.409136517236849}
 {'stress': '2', 'mean_slo': 19.560000000000002, 'sd_slo': 20.22904965637289}
 {'stress': '4', 'mean_slo': 48.204, 'sd_slo': 11.575946181630252}
 {'stress': '8', 'mean_slo': 66.946, 'sd_slo': 2.2766488530293825}
 
 
+# Response time
+
+# stock IO
+{'stress': '1', 'mean_response_time': 0.013931123542785645, 'sd_response_time': 0.02154868116900464}
+{'stress': '4', 'mean_response_time': 0.01008437774181366, 'sd_response_time': 0.003965299145058271}
+{'stress': '8', 'mean_response_time': 0.013018277006149293, 'sd_response_time': 0.020292113443210923}
+{'stress': '16', 'mean_response_time': 0.04390564458847046, 'sd_response_time': 0.09734533553014224}
+
+# tetris IO
+{'stress': '1', 'mean_response_time': 0.010032635407447815, 'sd_response_time': 0.0027634251329087915}
+{'stress': '4', 'mean_response_time': 0.010236351113319397, 'sd_response_time': 0.003529823474973755}
+{'stress': '8', 'mean_response_time': 0.010625133428573609, 'sd_response_time': 0.004527564129962604}
+{'stress': '16', 'mean_response_time': 0.011779612283706664, 'sd_response_time': 0.007055568675184643}
+
+# stock Memory
+{'stress': '1', 'mean_response_time': 0.010636531348228454, 'sd_response_time': 0.0058909989543255775}
+{'stress': '2', 'mean_response_time': 0.011114657020568847, 'sd_response_time': 0.005808977640447399}
+{'stress': '4', 'mean_response_time': 0.020395486159324645, 'sd_response_time': 0.017304102423126282}
+{'stress': '8', 'mean_response_time': 0.030807790837287904, 'sd_response_time': 0.08523730116991325}
+
+# tetris Memory
+{'stress': '1', 'mean_response_time': 0.010445968413352966, 'sd_response_time': 0.00424000326257646}
+{'stress': '2', 'mean_response_time': 0.010385456075668336, 'sd_response_time': 0.004046797540687292}
+{'stress': '4', 'mean_response_time': 0.012855101823806763, 'sd_response_time': 0.01137681335506655}
+{'stress': '8', 'mean_response_time': 0.03395794801712036, 'sd_response_time': 0.6713324470722437}
+
+
+
+
+In [57]: experiments = ['1', '2', '3', '4', '5']
+    ...: memstress = ['1', '2', '4', '8']
+    ...: for stress in memstress:
+    ...:     response_times = []
+    ...:     sd_response_times = []
+    ...:     for exp in experiments:
+    ...:         for out in results:
+    ...:             if out[0] == 'MEMSTOCK/exp' + exp + '/stockmem_' + exp + '_' + stress + '.json':
+    ...:                 response_times.append(out[2])
+    ...:                 sd_response_times.append(out[3])
+    ...:     d = {}
+    ...:     d['stress'] = stress
+    ...:     d['mean_response_time'] = statistics.mean(response_times)
+    ...:     pooled_variance = (9999 * sum(map(lambda x:x*x, sd_response_times)))/(50000 - 5)
+    ...:     d['sd_response_time'] = math.sqrt(pooled_variance)
+    ...:     print(d)
+
+
+In [45]: experiments = ['1', '2', '3', '4', '5']
+    ...: for stress in iostress:
+    ...:     x = []
+    ...:     for exp in experiments:
+    ...:         for out in results:
+    ...:             if out[0] == 'IOSTOCK/exp' + exp + '/stock_' + exp + '_' + stress + '.json':
+    ...:                 x.append(out[-1])
+    ...:     x = [y*100 for y in x]
+    ...:     d = {}
+    ...:     d['stress'] = stress
+    ...:     d['mean_slo'] = statistics.mean(x)
+    ...:     d['sd_slo'] = statistics.stdev(x)
+    ...:     print(d)
 
