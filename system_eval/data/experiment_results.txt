@@ -1,0 +1,42 @@
+# SLO 
+
+# Tetris IO
+{'stress': '1', 'mean_slo': 0.01976, 'sd_slo': 0.00627757915123338}
+{'stress': '4', 'mean_slo': 0.03152, 'sd_slo': 0.006810433172713759}
+{'stress': '8', 'mean_slo': 0.06572, 'sd_slo': 0.01851842325901425}
+{'stress': '16', 'mean_slo': 0.154, 'sd_slo': 0.013116211343219508}
+
+# STOCK IO
+{'stress': '1', 'mean_slo': 0.18754, 'sd_slo': 0.2653028891663263}
+{'stress': '4', 'mean_slo': 0.040780000000000004, 'sd_slo': 0.002959222870957847}
+{'stress': '8', 'mean_slo': 0.13078, 'sd_slo': 0.10362343846833111}
+{'stress': '16', 'mean_slo': 0.6095, 'sd_slo': 0.4229379268876226}
+
+
+# Tetris Memory
+{'stress': '1', 'mean_slo': 0.12262, 'sd_slo': 0.12926365305065457}
+{'stress': '2', 'mean_slo': 0.09388, 'sd_slo': 0.09145409777587879}
+{'stress': '4', 'mean_slo': 0.28228, 'sd_slo': 0.17548993418427164}
+{'stress': '8', 'mean_slo': 0.6085, 'sd_slo': 0.0938231847679453}
+
+
+# STOCK Memory#
+{'stress': '1', 'mean_slo': 0.1421, 'sd_slo': 0.09409136517236849}
+{'stress': '2', 'mean_slo': 0.1956, 'sd_slo': 0.20229049656372888}
+{'stress': '4', 'mean_slo': 0.48203999999999997, 'sd_slo': 0.11575946181630252}
+{'stress': '8', 'mean_slo': 0.6694599999999999, 'sd_slo': 0.022766488530293814}
+
+
+#In [44]: experiments = ['1', '2', '3', '4', '5']
+#    ...: memstress = ['1', '2', '4', '8']
+#    ...: for stress in memstress:
+#    ...:     x = []
+#    ...:     for exp in experiments:
+#    ...:         for out in results:
+#    ...:             if out[0] == 'MEM/exp' + exp + '/tetris_' + exp + '_' + stress + '.json':
+#    ...:                 x.append(out[-1])
+#    ...:     d = {}
+#    ...:     d['stress'] = stress
+#    ...:     d['mean_slo'] = statistics.mean(x)
+#    ...:     d['sd_slo'] = statistics.stdev(x)
+#    ...:     print(d)
