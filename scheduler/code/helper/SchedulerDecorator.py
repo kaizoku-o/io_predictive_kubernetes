@@ -6,6 +6,15 @@ scheduler_state = {};
 backoff_count = 1.0;
 logging = logit.get_logger()
 
+
+##
+#A function decorator used to wrap the schedule function within main.py
+#This function prevents immediate duplicated scheduling requests and handles runtime errors that occur when
+#the scheduler is unable to connect to tetris predicator.
+##
+#Future work could be for requeue and retrying pods that have actually failed to be scheduled here.
+#though in our setup we had not experienced any issues with pods failing to be scheduled.
+##
 def backoff(func):
    
    def wrapper(*args, **kw):
