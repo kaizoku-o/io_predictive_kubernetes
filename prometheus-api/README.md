@@ -1,6 +1,6 @@
 ### Prometheus Utililty Functions
 
-**prometheus.py** provides functions to query prometheus API to get metric data. The metric data request is in the form of prometheus query written in PromQL. The functions take duration parameters to get the metrics in that duration with a specified sampling rate.
+**prometheus.py** (vabongal) provides functions to query prometheus API to get metric data. The metric data request is in the form of prometheus query written in PromQL. The functions take duration parameters to get the metrics in that duration with a specified sampling rate.
 
 #### Prometheus [APIs](https://prometheus.io/docs/prometheus/latest/querying/api/)
 

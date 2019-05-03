@@ -66,3 +66,6 @@ Raw intermediate data generated after parsing the responses from each of the 20 
 
 #### plots (vabongal)
 All the plots are generated using Gnuplot. This directory contains the data files and the gnuplot source code to generate graphs in PNG format. 
+
+#### tester (vabongal)
+Includes scripts that are used to automate the experiment and evaluation steps. 
