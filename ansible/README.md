@@ -26,7 +26,7 @@ This template enables tetris-predictor flask api and its prediction algorithm co
 
 #### Ansible playbook files
 
-*K8install.yml*
+*K8install.yml* - kdmarti2
 
 ```(bash)
 This playbook is the primary entry point to begin the environment setup. Based on the IP addresses or node information specified in the inventory.yml, the k8smaster, node and prometheus server are configured and corresponding services are started in the nodes.
