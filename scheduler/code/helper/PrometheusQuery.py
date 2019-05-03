@@ -3,25 +3,12 @@ from requests import *
 import json
 import operator
 
-#[
-# [
-#   {
-#     “workload”: {
-#       “192.168.0.2": 48.16889858462753,
-#       “192.168.0.3”: 48.45593438604228
-#     }
-#   },
-#   {
-#     “workloadType”: “cpu”
-#   },
-#   {
-#     “unit”: “percent”
-#   }
-# ]
-#]
-
 ##
-#url forma
+#Function is used to ask the predicator for future workloads of a certain type
+#String api -> location of the predicator api
+#String model -> expected to be cpu, mem, or io.  Represents the workload to query about
+#int time -> number of seconds to predict into the future
+#return dict -> ordered dictionary were the first value will contain the node with the lowest predicted workload.
 ##
 def get_predict_workload(api: str,model: str,time:int = 60) -> dict:
     request_format = {
