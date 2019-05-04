@@ -8,7 +8,8 @@ This repository has all the source code required for the setup and evaluation of
 Complete environment setup is done using Ansible. This directory contains the playbooks, templates and scripts that are used to setup the kubernetes cluster and the prometheus monitoring system.
 
 ### predictor
-Includes all the logic and implementation of the Tetris-predictor module, which consists of prediction algorithms and Flask APIs expose to listen on requests from Tetris-scheduler for workload predictions. 
+Includes all the logic and implementation of the Tetris-predictor module, which consists of prediction algorithms and Flask APIs exposed to listen on requests from Tetris-scheduler for workload predictions. 
+It also contains the eval directory which has the real datasets from our workloads that we used for the evaluation of our algorithms and the Jupyter notebooks for each of the algorithms.
 
 ### prometheus-api
 Implements APIs for querying prometheus for metrics data over prometheus native APIs. It interacts with predictor module to supply metrics requested for training instance. 
