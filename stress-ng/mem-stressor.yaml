@@ -14,6 +14,7 @@ spec:
       labels:
         app: stressor
     spec:
+      schedulerName: tetris-scheduler-mem
       containers:
       - name: stressor
         image: caffiendd/stressng

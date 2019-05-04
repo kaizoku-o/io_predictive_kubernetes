@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: memory-stressor
+  name: io-stressor
   labels:
     app: stressor
 spec:
@@ -14,6 +14,7 @@ spec:
       labels:
         app: stressor
     spec:
+      schedulerName: tetris-scheduler-io
       containers:
       - name: stressor
         image: caffiendd/stressng
