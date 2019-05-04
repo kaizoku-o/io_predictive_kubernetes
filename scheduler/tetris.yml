@@ -42,14 +42,17 @@ spec:
       containers:
       - name : tetris-scheduler
         image: 172.31.15.135:5000/tetris
+        env:
+                - name: PROMETHEUS_API
+                  value: "http://172.31.7.88:9580/api"
         securityContext:
           privileged: false
-        volumeMounts:
-        - mountPath: "/var/log"
-          name: tetris-pv-storage
+        volumeMounts: 
+                - mountPath: "/var/log"
+                  name: tetris-pv-storage
       hostNetwork: false
       hostPID: false
-      volumes:
-      - name: tetris-pv-storage
-        persistentVolumeClaim:
-         claimName: tetris-claim-v1
+      volumes: 
+                - name: tetris-pv-storage
+                  persistentVolumeClaim:
+                          claimName: tetris-claim-v1
